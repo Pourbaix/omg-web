@@ -26,10 +26,10 @@ jobs:
           port: ${{ secrets.PORT }}
           script: |
             cd git/omg-web/
-            rm -rf ./build
-            git pull
-            export NVM_DIR=~/.nvm
-            source ~/.nvm/nvm.sh
-            npm run build
-            pm2 restart app.js
+            #rm -rf ./build
+            #git pull
+            #export NVM_DIR=~/.nvm
+            #source ~/.nvm/nvm.sh
+            #npm run build
+            #pm2 restart app.js
             echo "Job done."
