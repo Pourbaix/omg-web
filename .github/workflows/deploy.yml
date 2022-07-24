@@ -7,6 +7,8 @@ name: Deploy
 on:
   push:
     branches: [ master ]
+  workflow_dispatch:
+  
 # There is only one job (at the moment) named build (<job_id> = build).
 # It runs on ubuntu-latest because it's the OS docker uses
 # Steps is a sequence of tasks (name will be displayed in github action)
