@@ -499,15 +499,15 @@ class ImportFileCard extends Component {
 					className="card d-flex border-bottom-primary shadow h-100 py-2"
 				>
 					<div className="card-body">
-						<div className="row no-gutters align-items-center">
-							<div className="col mr-2">
-								<div className="text font-weight-bold text-primary text-uppercase">
+						<div className="flex-d no-gutters align-items-center">
+							<div className="col me-2">
+								<div className="text fw-bold text-primary text-uppercase">
 									File import
 								</div>
 							</div>
 						</div>
 						<hr className="sidebar-divider" />
-						<form className="ml-2 mr-2" id="uploadForm">
+						<form className="ms-2 me-2" id="uploadForm">
 							<div className="row form-group">
 								<label
 									className={"form-check-label"}
@@ -567,14 +567,14 @@ class ImportFileCard extends Component {
 								</div>
 							</div>
 						</form>
-						<div className="row d-flex align-items-center justify-content-end mr-2">
+						<div className="d-flex align-items-center justify-content-end me-2">
 							<div
 								id={"uploadButtonInvalidText"}
-								className={"text-danger mr-4"}
+								className={"text-danger me-4"}
 							/>
 							{this.showButton()}
 						</div>
-						<div className="float-right">
+						<div className="float-end">
 							<input
 								className="form-check-input "
 								type="checkbox"

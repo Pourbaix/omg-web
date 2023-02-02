@@ -58,7 +58,7 @@ export default function DeleteTagActivationDialog(props) {
 	return (
 		<div>
 			<button className={"btn btn-danger"} onClick={handleClickOpen}>
-				<span className={"icon text-white mr-2"}>
+				<span className={"icon text-white me-2"}>
 					<i className={"fas fa-trash"} />
 				</span>
 				<span className={"text"}>Delete</span>
@@ -68,7 +68,7 @@ export default function DeleteTagActivationDialog(props) {
 				onClose={handleClose}
 				// aria-labelledby="deleteTag-dialog-title"
 			>
-				<DialogContent className={"ml-2 mr-2"}>
+				<DialogContent className={"ms-2 me-2"}>
 					<div className={"text-center"}>
 						{" "}
 						Are you sure you want to delete this tag ?
@@ -82,7 +82,7 @@ export default function DeleteTagActivationDialog(props) {
 					<button
 						id={"buttonDeleteTagActivationDialog"}
 						onClick={deleteTagActivation}
-						className={"btn text-danger ml-0"}
+						className={"btn text-danger ms-0"}
 					>
 						Yes
 					</button>

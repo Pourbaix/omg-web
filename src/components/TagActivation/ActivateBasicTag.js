@@ -260,7 +260,7 @@ class ActivateBasicTag extends Component {
 									this.state.recentTags.indexOf(tag)
 								}
 								className={
-									"btn btn-outline-primary mt-2 ml-1 mr-1 pl-2 pr-2 pt-1 pb-1"
+									"btn btn-outline-primary mt-2 ms-1 me-1 ps-2 pe-2 pt-1 pb-1"
 								}
 							>
 								<input
@@ -307,7 +307,7 @@ class ActivateBasicTag extends Component {
 				<input
 					id={"manualBasicTagInput"}
 					className={
-						"form-control form-control-plaintext border pl-2 border-bottom-primary"
+						"form-control form-control-plaintext border ps-2 border-bottom-primary"
 					}
 					placeholder={"Enter a tag"}
 					onChange={this.manualBasicTagInputChange}

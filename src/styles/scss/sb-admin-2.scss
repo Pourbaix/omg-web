@@ -18,3 +18,6 @@
 @import "login.scss";
 @import "error.scss";
 @import "footer.scss";
+
+//Override some properties from Bootstrap 5 to keep the correct look for the application
+@import "override.scss";

@@ -1,0 +1,45 @@
+.col-12 {
+	padding: 0 12px 0 12px;
+}
+
+.row > * {
+	padding: 0;
+}
+
+.form-group {
+	margin-bottom: 1rem;
+}
+
+.btn-primary {
+	color: white;
+}
+
+.btn-block {
+	width: 100%;
+}
+
+.btn-link {
+	text-decoration: none;
+}
+
+.card-body {
+	padding: 1.25rem;
+}
+
+.navbar {
+	padding: 0.5rem 1rem;
+}
+
+.sidebar-dark hr.sidebar-divider {
+	border-top: 1px solid rgba(255, 255, 255, 0.5) !important;
+}
+
+.container-fluid {
+	padding-left: 1.5rem;
+	padding-right: 1.5rem;
+}
+
+.form-control {
+	padding: 0.375rem 0.75rem !important;
+	appearance: auto;
+}

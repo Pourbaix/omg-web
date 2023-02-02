@@ -58,7 +58,7 @@ export default function EditTagNameDialog(props) {
 				className={"btn btn-outline-warning"}
 				onClick={handleClickOpen}
 			>
-				<span className={"icon mr-2"}>
+				<span className={"icon me-2"}>
 					<i className={"fas fa-edit"} />
 				</span>
 				<span className={"text"}>Change {props.tagName}</span>
@@ -77,7 +77,7 @@ export default function EditTagNameDialog(props) {
 				>
 					Change name
 				</DialogTitle>
-				<DialogContent className={"ml-2 mr-2"}>
+				<DialogContent className={"ms-2 me-2"}>
 					<div className="row form-group mt-2">
 						<label
 							className={"form-check-label"}
@@ -107,7 +107,7 @@ export default function EditTagNameDialog(props) {
 					<button
 						id={"editTagApplyButton"}
 						onClick={applyChanges}
-						className={"btn text-warning ml-0"}
+						className={"btn text-warning ms-0"}
 					>
 						Apply
 					</button>

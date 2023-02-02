@@ -224,14 +224,14 @@ class TagsHistory extends Component {
 	//     return (
 	//         <div className="card-header collapsed ">
 	//             <div className={"d-flex justify-content-between"}>
-	//                 <div className={"font-weight-bold text-lg"}>
+	//                 <div className={"fw-bold text-lg"}>
 	//                     <u>Event name</u>
 	//                 </div>
-	//                 <div className={"font-weight-bold text-lg"}>
+	//                 <div className={"fw-bold text-lg"}>
 	//                     <u>Creation date</u>
 	//                 </div>
 	//             </div>
-	//             <div className={"font-weight-bold text-lg text-center"}>
+	//             <div className={"fw-bold text-lg text-center"}>
 	//                 <u>Event date</u>
 	//             </div>
 	//         </div>
@@ -290,11 +290,7 @@ class TagsHistory extends Component {
 							}
 						>
 							<div className={"d-flex justify-content-between"}>
-								<div
-									className={
-										"font-weight-bold text-lg text-primary"
-									}
-								>
+								<div className={"fw-bold text-lg text-primary"}>
 									{tag["name"]}
 								</div>
 								<div className={"small text-gray-500"}>

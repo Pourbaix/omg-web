@@ -187,7 +187,7 @@ export default function EditTagActivationDialog(props) {
 					className={"btn btn-warning"}
 					onClick={handleClickOpen}
 				>
-					<span className={"icon text-white mr-2"}>
+					<span className={"icon text-white me-2"}>
 						<i className={"fas fa-edit"} />
 					</span>
 					<span className={"text"}>Edit & Confirm</span>
@@ -206,7 +206,7 @@ export default function EditTagActivationDialog(props) {
 					>
 						Edit Tag
 					</DialogTitle>
-					<DialogContent className={"ml-2 mr-2"}>
+					<DialogContent className={"ms-2 me-2"}>
 						<div className="row form-group mt-2">
 							<label
 								className={"form-check-label"}
@@ -251,7 +251,7 @@ export default function EditTagActivationDialog(props) {
 						<button
 							id={"editTagActivationApplyButton"}
 							onClick={applyChanges}
-							className={"btn text-warning ml-0"}
+							className={"btn text-warning ms-0"}
 						>
 							Apply
 						</button>
@@ -276,7 +276,7 @@ export default function EditTagActivationDialog(props) {
 					className={"btn btn-warning"}
 					onClick={handleClickOpen}
 				>
-					<span className={"icon text-white mr-2"}>
+					<span className={"icon text-white me-2"}>
 						<i className={"fas fa-edit"} />
 					</span>
 					<span className={"text"}>Edit & Confirm</span>
@@ -295,7 +295,7 @@ export default function EditTagActivationDialog(props) {
 					>
 						Edit Range
 					</DialogTitle>
-					<DialogContent className={"ml-2 mr-2"}>
+					<DialogContent className={"ms-2 me-2"}>
 						<div className="row form-group mt-2">
 							<label
 								className={"form-check-label"}
@@ -349,7 +349,7 @@ export default function EditTagActivationDialog(props) {
 						<button
 							id={"editTagActivationApplyButton"}
 							onClick={applyChanges}
-							className={"btn text-warning ml-0"}
+							className={"btn text-warning ms-0"}
 						>
 							Apply
 						</button>

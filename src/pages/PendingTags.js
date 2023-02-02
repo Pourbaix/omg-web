@@ -131,11 +131,7 @@ class PendingTags extends Component {
 							}
 						>
 							<div className={"d-flex justify-content-between"}>
-								<div
-									className={
-										"font-weight-bold text-lg text-primary"
-									}
-								>
+								<div className={"fw-bold text-lg text-primary"}>
 									{pendingTag.name}
 								</div>
 								<div className={"small text-gray-500"}>

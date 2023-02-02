@@ -193,7 +193,7 @@ class TagsManager extends Component {
 										>
 											<div
 												className={
-													"font-weight-bold text-lg text-primary"
+													"fw-bold text-lg text-primary"
 												}
 											>
 												{tag["name"]}
