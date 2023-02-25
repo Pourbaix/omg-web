@@ -1,5 +1,12 @@
 import React, { Component } from "react";
-import { Chart } from "chart.js";
+import {
+	Chart,
+	CategoryScale,
+	LinearScale,
+	LineController,
+	PointElement,
+	LineElement,
+} from "chart.js";
 // import annotationPlugin from 'chartjs-plugin-annotation';
 
 import { getChartDataFromTagName } from "../../../services/omgServer";
@@ -14,6 +21,13 @@ import { getChartDataFromTagName } from "../../../services/omgServer";
 class ChartBasic extends Component {
 	constructor(props) {
 		super(props);
+		Chart.register([
+			CategoryScale,
+			LinearScale,
+			LineController,
+			PointElement,
+			LineElement,
+		]);
 		this.state = {
 			tagSelected: this.props.tagSelected,
 			datetimeRange: this.props.datetimeRange,
@@ -65,27 +79,24 @@ class ChartBasic extends Component {
 					responsive: true,
 					maintainAspectRatio: false,
 					scales: {
-						xAxes: [
-							{
-								time: {
-									unit: "date",
-								},
-								ticks: {
-									padding: 10,
-									autoSkip: true,
-									maxTicksLimit: 20,
-								},
+						x: {
+							time: {
+								unit: "date",
 							},
-						],
-						yAxes: [
-							{
-								ticks: {
-									maxTicksLimit: 10,
-									paddings: 10,
-									type: "linear",
-								},
+							ticks: {
+								padding: 10,
+								autoSkip: true,
+								maxTicksLimit: 20,
 							},
-						],
+						},
+
+						y: {
+							ticks: {
+								maxTicksLimit: 10,
+								paddings: 10,
+								type: "linear",
+							},
+						},
 					},
 					legend: {
 						display: true,
@@ -311,6 +322,10 @@ class ChartBasic extends Component {
 
 	async componentDidMount() {
 		await this.getChartData();
+		if (this.state.myChart) {
+			this.state.myChart.destroy();
+		}
+		console.log(this.state.myChart);
 		this.changeMyChart(
 			new Chart(
 				document.getElementById("myAreaChart").getContext("2d"),
