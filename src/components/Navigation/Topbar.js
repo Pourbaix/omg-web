@@ -59,7 +59,10 @@ class Topbar extends Component {
 							aria-haspopup="true"
 							aria-expanded="false"
 						>
-							<span className="me-2 d-lg-inline text-gray-600">
+							<span
+								className="me-2 d-lg-inline text-gray-600"
+								onClick={() => this.logout()}
+							>
 								User
 							</span>
 							{/*<img className="img-profile rounded-circle" src="https://source.unsplash.com/QAB-WJcbgJk/60x60" alt="user"/>*/}

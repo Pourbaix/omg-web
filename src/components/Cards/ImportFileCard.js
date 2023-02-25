@@ -493,10 +493,10 @@ class ImportFileCard extends Component {
 	render() {
 		if (this.state.redirect) return <Navigate to="/pendingtags" />;
 		return (
-			<div>
+			<div style={{ maxWidth: "30%" }}>
 				<div
 					id="uploadCard"
-					className="card d-flex border-bottom-primary shadow h-100 py-2"
+					className="card d-flex border-bottom-primary shadow h-100 py-2 mb-3 me-3"
 				>
 					<div className="card-body">
 						<div className="flex-d no-gutters align-items-center">

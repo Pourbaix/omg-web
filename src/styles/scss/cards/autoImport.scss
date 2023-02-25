@@ -1,0 +1,40 @@
+.loading_button {
+	background-color: #4e73df;
+}
+
+.good_button {
+	background-color: green;
+}
+
+.error_button {
+	background-color: rgb(206, 60, 60);
+}
+
+.save_button {
+	background-color: #4e73df;
+}
+
+.button {
+	display: flex;
+	align-items: center;
+	border: none;
+	border-radius: 5px;
+	gap: 5px;
+	margin-top: 25px;
+	color: white;
+	padding: 8px;
+}
+
+.save_logo {
+	width: 25px;
+}
+
+.loading_logo {
+	width: 25px;
+}
+
+.checked {
+	fill: white;
+	color: white;
+	width: 20px;
+}

@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import { Navigate } from "react-router-dom";
-import { signin } from "../services/omgServer";
+import { signin, autoImportData } from "../services/omgServer";
 import { Cookies, withCookies } from "react-cookie";
 import { instanceOf } from "prop-types";
 import store from "../redux/store";
@@ -39,6 +39,7 @@ class SignIn extends Component {
 					expires: expiresDate,
 				});
 				await this.setApiKey(res.token);
+				await autoImportData();
 				return <Navigate to="/" />;
 			}
 		} else {

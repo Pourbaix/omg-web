@@ -7,10 +7,10 @@ const hostUrl = process.env.REACT_APP_API_HOST;
 // const hostUrl = "http://127.0.0.1:3001/api" // Dev URL
 
 const headers = new Headers({
-    'Content-Type': 'application/json',
-    'Accept': 'application/json',
-    'Accept-Charset': 'utf-8',
-    'Accept-Encoding': 'gzip, deflate, br'
+	"Content-Type": "application/json",
+	Accept: "application/json",
+	"Accept-Charset": "utf-8",
+	"Accept-Encoding": "gzip, deflate, br",
 });
 
 /**
@@ -19,84 +19,83 @@ const headers = new Headers({
  * @return {Promise<any>} : all tags of a user or an error
  */
 export async function getAllTagsFromUserId() {
-    let url = hostUrl + "/tags/all";
-    let res = await fetch(url, {
-        credentials: 'same-origin',
-        method: 'GET',
-        headers: {
-            'Content-Type': 'application/json',
-            'Accept': 'application/json',
-            'Accept-Charset': 'utf-8',
-            'Accept-Encoding': 'gzip, deflate, br',
-            'Authorization': "Bearer " + store.getState().storeApiKey.apiKey
-        }
-    });
-    return res.json();
+	let url = hostUrl + "/tags/all";
+	let res = await fetch(url, {
+		credentials: "same-origin",
+		method: "GET",
+		headers: {
+			"Content-Type": "application/json",
+			Accept: "application/json",
+			"Accept-Charset": "utf-8",
+			"Accept-Encoding": "gzip, deflate, br",
+			Authorization: "Bearer " + store.getState().storeApiKey.apiKey,
+		},
+	});
+	return res.json();
 }
 
-
 export async function getRangesHistory() {
-    let url = hostUrl + "/ranges/all";
-    let res = await fetch(url, {
-        credentials: 'same-origin',
-        method: 'GET',
-        headers: {
-            'Content-Type': 'application/json',
-            'Accept': 'application/json',
-            'Accept-Charset': 'utf-8',
-            'Accept-Encoding': 'gzip, deflate, br',
-            'Authorization': "Bearer " + store.getState().storeApiKey.apiKey
-        }
-    });
-    return res.json();
+	let url = hostUrl + "/ranges/all";
+	let res = await fetch(url, {
+		credentials: "same-origin",
+		method: "GET",
+		headers: {
+			"Content-Type": "application/json",
+			Accept: "application/json",
+			"Accept-Charset": "utf-8",
+			"Accept-Encoding": "gzip, deflate, br",
+			Authorization: "Bearer " + store.getState().storeApiKey.apiKey,
+		},
+	});
+	return res.json();
 }
 
 export async function getRangesWithFormattedTimes() {
-    let url = hostUrl + "/ranges/times";
-    let res = await fetch(url, {
-        credentials: 'same-origin',
-        method: 'GET',
-        headers: {
-            'Content-Type': 'application/json',
-            'Accept': 'application/json',
-            'Accept-Charset': 'utf-8',
-            'Accept-Encoding': 'gzip, deflate, br',
-            'Authorization': "Bearer " + store.getState().storeApiKey.apiKey
-        }
-    });
-    return res.json();
+	let url = hostUrl + "/ranges/times";
+	let res = await fetch(url, {
+		credentials: "same-origin",
+		method: "GET",
+		headers: {
+			"Content-Type": "application/json",
+			Accept: "application/json",
+			"Accept-Charset": "utf-8",
+			"Accept-Encoding": "gzip, deflate, br",
+			Authorization: "Bearer " + store.getState().storeApiKey.apiKey,
+		},
+	});
+	return res.json();
 }
 
 export async function getBolusWithFormattedDateAndTime() {
-    let url = hostUrl + "/bolus/dateandtime";
-    let res = await fetch(url, {
-        credentials: 'same-origin',
-        method: 'GET',
-        headers: {
-            'Content-Type': 'application/json',
-            'Accept': 'application/json',
-            'Accept-Charset': 'utf-8',
-            'Accept-Encoding': 'gzip, deflate, br',
-            'Authorization': "Bearer " + store.getState().storeApiKey.apiKey
-        }
-    });
-    return res.json();
+	let url = hostUrl + "/bolus/dateandtime";
+	let res = await fetch(url, {
+		credentials: "same-origin",
+		method: "GET",
+		headers: {
+			"Content-Type": "application/json",
+			Accept: "application/json",
+			"Accept-Charset": "utf-8",
+			"Accept-Encoding": "gzip, deflate, br",
+			Authorization: "Bearer " + store.getState().storeApiKey.apiKey,
+		},
+	});
+	return res.json();
 }
 
 export async function detectEventInRange() {
-    let url = hostUrl + "/ranges/detect";
-    let res = await fetch(url, {
-        credentials: 'same-origin',
-        method: 'GET',
-        headers: {
-            'Content-Type': 'application/json',
-            'Accept': 'application/json',
-            'Accept-Charset': 'utf-8',
-            'Accept-Encoding': 'gzip, deflate, br',
-            'Authorization': "Bearer " + store.getState().storeApiKey.apiKey
-        }
-    });
-    return res.json();
+	let url = hostUrl + "/ranges/detect";
+	let res = await fetch(url, {
+		credentials: "same-origin",
+		method: "GET",
+		headers: {
+			"Content-Type": "application/json",
+			Accept: "application/json",
+			"Accept-Charset": "utf-8",
+			"Accept-Encoding": "gzip, deflate, br",
+			Authorization: "Bearer " + store.getState().storeApiKey.apiKey,
+		},
+	});
+	return res.json();
 }
 
 /**
@@ -105,19 +104,19 @@ export async function detectEventInRange() {
  * @return {Promise<any>} : all datetime of a user or an error
  */
 export async function getDataDatetime() {
-    let url = hostUrl + "/data/datetime";
-    let res = await fetch(url, {
-        credentials: 'same-origin',
-        method: 'GET',
-        headers: {
-            'Content-Type': 'application/json',
-            'Accept': 'application/json',
-            'Accept-Charset': 'utf-8',
-            'Accept-Encoding': 'gzip, deflate, br',
-            'Authorization': "Bearer " + store.getState().storeApiKey.apiKey
-        }
-    });
-    return res.json();
+	let url = hostUrl + "/data/datetime";
+	let res = await fetch(url, {
+		credentials: "same-origin",
+		method: "GET",
+		headers: {
+			"Content-Type": "application/json",
+			Accept: "application/json",
+			"Accept-Charset": "utf-8",
+			"Accept-Encoding": "gzip, deflate, br",
+			Authorization: "Bearer " + store.getState().storeApiKey.apiKey,
+		},
+	});
+	return res.json();
 }
 /**
  * post a file data for data importation
@@ -128,27 +127,27 @@ export async function getDataDatetime() {
  * @return {Promise<(Response|any)[]|*>} : results of the importation
  */
 export async function postUpload(file, sensorModel, importName) {
-    try {
-        let url = hostUrl + "/data/file";
-        let formData = new FormData();
-        formData.append('file', file.files[0]);
-        formData.append('sensorModel', sensorModel);
-        formData.append('importName', importName);
-        let res = await fetch(url, {
-            credentials: "same-origin",
-            method: 'POST',
-            body: formData,
-            headers: {
-                'Authorization': "Bearer " + store.getState().storeApiKey.apiKey,
-                'Accept': 'application/json',
-                'Accept-Charset': 'utf-8',
-                'Accept-Encoding': 'gzip, deflate, br'
-            }
-        });
-        return [res, await res.json()];
-    } catch (e) {
-        return e;
-    }
+	try {
+		let url = hostUrl + "/data/file";
+		let formData = new FormData();
+		formData.append("file", file.files[0]);
+		formData.append("sensorModel", sensorModel);
+		formData.append("importName", importName);
+		let res = await fetch(url, {
+			credentials: "same-origin",
+			method: "POST",
+			body: formData,
+			headers: {
+				Authorization: "Bearer " + store.getState().storeApiKey.apiKey,
+				Accept: "application/json",
+				"Accept-Charset": "utf-8",
+				"Accept-Encoding": "gzip, deflate, br",
+			},
+		});
+		return [res, await res.json()];
+	} catch (e) {
+		return e;
+	}
 }
 
 /**
@@ -160,26 +159,42 @@ export async function postUpload(file, sensorModel, importName) {
  * @param weekDaysSelected
  * @return {Promise<any>} : all the data or an error.
  */
-export async function getChartDataFromTagName(tagName, datetimeRange, timeSelected, weekDaysSelected) {
-    let url = hostUrl + "/data/chart?tagName=" + tagName + "&fromTime=" + timeSelected[0] + "&toTime=" + timeSelected[1];
-    if (datetimeRange) {
-        url += "&startDate=" + datetimeRange[0].toISOString() + "&endDate=" + datetimeRange[1].toISOString();
-    }
-    if (weekDaysSelected.length > 0) {
-        url += "&weekDays=" + weekDaysSelected.join('-');
-    }
-    let res = await fetch(url, {
-        credentials: 'same-origin',
-        method: 'GET',
-        headers: {
-            'Content-Type': 'application/json',
-            'Accept': 'application/json',
-            'Accept-Charset': 'utf-8',
-            'Accept-Encoding': 'gzip, deflate, br',
-            'Authorization': "Bearer " + store.getState().storeApiKey.apiKey
-        }
-    });
-    return res.json();
+export async function getChartDataFromTagName(
+	tagName,
+	datetimeRange,
+	timeSelected,
+	weekDaysSelected
+) {
+	let url =
+		hostUrl +
+		"/data/chart?tagName=" +
+		tagName +
+		"&fromTime=" +
+		timeSelected[0] +
+		"&toTime=" +
+		timeSelected[1];
+	if (datetimeRange) {
+		url +=
+			"&startDate=" +
+			datetimeRange[0].toISOString() +
+			"&endDate=" +
+			datetimeRange[1].toISOString();
+	}
+	if (weekDaysSelected.length > 0) {
+		url += "&weekDays=" + weekDaysSelected.join("-");
+	}
+	let res = await fetch(url, {
+		credentials: "same-origin",
+		method: "GET",
+		headers: {
+			"Content-Type": "application/json",
+			Accept: "application/json",
+			"Accept-Charset": "utf-8",
+			"Accept-Encoding": "gzip, deflate, br",
+			Authorization: "Bearer " + store.getState().storeApiKey.apiKey,
+		},
+	});
+	return res.json();
 }
 
 /**
@@ -190,17 +205,17 @@ export async function getChartDataFromTagName(tagName, datetimeRange, timeSelect
  * @return {Promise<any>} : returns the token if ok or an error if not ok
  */
 export async function signin(email, password) {
-    let url = hostUrl + "/users/signin";
-    let res = await fetch(url, {
-        credentials: 'same-origin',
-        method: 'POST',
-        headers: headers,
-        body: JSON.stringify({
-            email: email,
-            password: password,
-        })
-    });
-    return res.json();
+	let url = hostUrl + "/users/signin";
+	let res = await fetch(url, {
+		credentials: "same-origin",
+		method: "POST",
+		headers: headers,
+		body: JSON.stringify({
+			email: email,
+			password: password,
+		}),
+	});
+	return res.json();
 }
 
 /**
@@ -210,14 +225,14 @@ export async function signin(email, password) {
  * @return {Promise<any>} : returns the result of the request
  */
 export async function signup(user) {
-    let url = hostUrl + "/users/signup";
-    let res = await fetch(url, {
-        credentials: 'same-origin',
-        method: 'POST',
-        headers: headers,
-        body: JSON.stringify(user)
-    });
-    return res.json();
+	let url = hostUrl + "/users/signup";
+	let res = await fetch(url, {
+		credentials: "same-origin",
+		method: "POST",
+		headers: headers,
+		body: JSON.stringify(user),
+	});
+	return res.json();
 }
 
 /**
@@ -226,110 +241,168 @@ export async function signup(user) {
  * @return Array of date {Promise<any>}
  */
 export async function getDataDays() {
-    let url = hostUrl + "/data/days";
-    let res = await fetch(url, {
-        credentials: 'same-origin',
-        method: 'GET',
-        headers: {
-            'Content-Type': 'application/json',
-            'Accept': 'application/json',
-            'Accept-Charset': 'utf-8',
-            'Accept-Encoding': 'gzip, deflate, br',
-            'Authorization': "Bearer " + store.getState().storeApiKey.apiKey
-        }
-    });
-    return res.json();
+	let url = hostUrl + "/data/days";
+	let res = await fetch(url, {
+		credentials: "same-origin",
+		method: "GET",
+		headers: {
+			"Content-Type": "application/json",
+			Accept: "application/json",
+			"Accept-Charset": "utf-8",
+			"Accept-Encoding": "gzip, deflate, br",
+			Authorization: "Bearer " + store.getState().storeApiKey.apiKey,
+		},
+	});
+	return res.json();
 }
 
 export async function getTagsDays(tagName = "") {
-    let url = hostUrl + "/tags/days";
-    if (tagName) {
-        url += "?tagName=" + tagName;
-    }
-    let res = await fetch(url, {
-        credentials: 'same-origin',
-        method: 'GET',
-        headers: {
-            'Content-Type': 'application/json',
-            'Accept': 'application/json',
-            'Accept-Charset': 'utf-8',
-            'Accept-Encoding': 'gzip, deflate, br',
-            'Authorization': "Bearer " + store.getState().storeApiKey.apiKey
-        }
-    });
-    return res.json();
+	let url = hostUrl + "/tags/days";
+	if (tagName) {
+		url += "?tagName=" + tagName;
+	}
+	let res = await fetch(url, {
+		credentials: "same-origin",
+		method: "GET",
+		headers: {
+			"Content-Type": "application/json",
+			Accept: "application/json",
+			"Accept-Charset": "utf-8",
+			"Accept-Encoding": "gzip, deflate, br",
+			Authorization: "Bearer " + store.getState().storeApiKey.apiKey,
+		},
+	});
+	return res.json();
 }
 
 export async function getTagsDay(day, tagName = "") {
-    let url = hostUrl + "/tags/day?day=" + day;
-    if (tagName) {
-        url += "&tagName=" + tagName;
-    }
-    let res = await fetch(url, {
-        credentials: 'same-origin',
-        method: 'GET',
-        headers: {
-            'Content-Type': 'application/json',
-            'Accept': 'application/json',
-            'Accept-Charset': 'utf-8',
-            'Accept-Encoding': 'gzip, deflate, br',
-            'Authorization': "Bearer " + store.getState().storeApiKey.apiKey
-        }
-    });
-    return res.json();
+	let url = hostUrl + "/tags/day?day=" + day;
+	if (tagName) {
+		url += "&tagName=" + tagName;
+	}
+	let res = await fetch(url, {
+		credentials: "same-origin",
+		method: "GET",
+		headers: {
+			"Content-Type": "application/json",
+			Accept: "application/json",
+			"Accept-Charset": "utf-8",
+			"Accept-Encoding": "gzip, deflate, br",
+			Authorization: "Bearer " + store.getState().storeApiKey.apiKey,
+		},
+	});
+	return res.json();
 }
 
 export async function getImportNames() {
-    let url = hostUrl + "/data/importnames";
-    let res = await fetch(url, {
-        credentials: 'same-origin',
-        method: 'GET',
-        headers: {
-            'Content-Type': 'application/json',
-            'Accept': 'application/json',
-            'Accept-Charset': 'utf-8',
-            'Accept-Encoding': 'gzip, deflate, br',
-            'Authorization': "Bearer " + store.getState().storeApiKey.apiKey
-        }
-    });
-    return res.json();
+	let url = hostUrl + "/data/importnames";
+	let res = await fetch(url, {
+		credentials: "same-origin",
+		method: "GET",
+		headers: {
+			"Content-Type": "application/json",
+			Accept: "application/json",
+			"Accept-Charset": "utf-8",
+			"Accept-Encoding": "gzip, deflate, br",
+			Authorization: "Bearer " + store.getState().storeApiKey.apiKey,
+		},
+	});
+	return res.json();
 }
 
 export async function deleteFile(importName) {
-    let url = hostUrl + "/data/file";
-    let res = await fetch(url, {
-        credentials: 'same-origin',
-        method: 'DELETE',
-        headers: {
-            'Content-Type': 'application/json',
-            'Accept': 'application/json',
-            'Accept-Charset': 'utf-8',
-            'Accept-Encoding': 'gzip, deflate, br',
-            'Authorization': "Bearer " + store.getState().storeApiKey.apiKey
-        },
-        body: '{"importName": "' + importName + '"}'
-    });
-    return [res, await res.json()];
+	let url = hostUrl + "/data/file";
+	let res = await fetch(url, {
+		credentials: "same-origin",
+		method: "DELETE",
+		headers: {
+			"Content-Type": "application/json",
+			Accept: "application/json",
+			"Accept-Charset": "utf-8",
+			"Accept-Encoding": "gzip, deflate, br",
+			Authorization: "Bearer " + store.getState().storeApiKey.apiKey,
+		},
+		body: '{"importName": "' + importName + '"}',
+	});
+	return [res, await res.json()];
 }
 
 export async function deleteAll() {
-    try {
-        let url = hostUrl + "/data/all";
-        let res = await fetch(url, {
-            credentials: 'same-origin',
-            method: 'DELETE',
-            headers: {
-                'Content-Type': 'application/json',
-                'Accept': 'application/json',
-                'Accept-Charset': 'utf-8',
-                'Accept-Encoding': 'gzip, deflate, br',
-                'Authorization': "Bearer " + store.getState().storeApiKey.apiKey
-            }
-        });
-        return [res, await res.json()];
-    } catch (e) {
-        console.log(e);
-    }
+	try {
+		let url = hostUrl + "/data/all";
+		let res = await fetch(url, {
+			credentials: "same-origin",
+			method: "DELETE",
+			headers: {
+				"Content-Type": "application/json",
+				Accept: "application/json",
+				"Accept-Charset": "utf-8",
+				"Accept-Encoding": "gzip, deflate, br",
+				Authorization: "Bearer " + store.getState().storeApiKey.apiKey,
+			},
+		});
+		return [res, await res.json()];
+	} catch (e) {
+		console.log(e);
+	}
+}
+
+export async function postAutoImportCredentials(username, password, country) {
+	let url = hostUrl + "/data/autoImportAccount";
+	let res = await fetch(url, {
+		credentials: "same-origin",
+		method: "POST",
+		headers: {
+			Authorization: "Bearer " + store.getState().storeApiKey.apiKey,
+			Accept: "application/json",
+			"Accept-Charset": "utf-8",
+			"Accept-Encoding": "gzip, deflate, br",
+			"Content-Type": "application/json",
+		},
+		body: JSON.stringify({
+			username: username,
+			password: password,
+			country: country,
+		}),
+	});
+	return await res.json();
+}
+
+export async function checkAutoImportConfig() {
+	let url = hostUrl + "/data/autoImportConfiguration";
+	let res = await fetch(url, {
+		credentials: "same-origin",
+		method: "GET",
+		headers: {
+			"Content-Type": "application/json",
+			Accept: "application/json",
+			"Accept-Charset": "utf-8",
+			"Accept-Encoding": "gzip, deflate, br",
+			Authorization: "Bearer " + store.getState().storeApiKey.apiKey,
+		},
+	});
+	let message = await res.json();
+	if (message.includes("Auto import already configured.")) {
+		return true;
+	} else if (message.includes("Auto import not configured.")) {
+		return false;
+	}
+}
+
+export async function autoImportData() {
+	let url = hostUrl + "/data/autoImportData";
+	let res = await fetch(url, {
+		credentials: "same-origin",
+		method: "GET",
+		headers: {
+			"Content-Type": "application/json",
+			Accept: "application/json",
+			"Accept-Charset": "utf-8",
+			"Accept-Encoding": "gzip, deflate, br",
+			Authorization: "Bearer " + store.getState().storeApiKey.apiKey,
+		},
+	});
+	return await res.json();
 }
 
 /**
@@ -338,17 +411,17 @@ export async function deleteAll() {
  * @return {Promise<Response>}
  */
 export async function verifyToken() {
-    let url = hostUrl + '/users/verify';
-    return await fetch(url, {
-        credentials: 'same-origin',
-        method: 'GET',
-        headers: {
-            Authorization: 'Bearer ' + store.getState().storeApiKey.apiKey,
-            Accept: 'application/json',
-            'Accept-Charset': 'utf-8',
-            'Accept-Encoding': 'gzip, deflate, br',
-        },
-    });
+	let url = hostUrl + "/users/verify";
+	return await fetch(url, {
+		credentials: "same-origin",
+		method: "GET",
+		headers: {
+			Authorization: "Bearer " + store.getState().storeApiKey.apiKey,
+			Accept: "application/json",
+			"Accept-Charset": "utf-8",
+			"Accept-Encoding": "gzip, deflate, br",
+		},
+	});
 }
 
 /**
@@ -357,22 +430,22 @@ export async function verifyToken() {
  * @return {Promise<null|any>} : 8 most recent tags or error
  */
 export async function getRecentTags() {
-    let url = hostUrl + '/tags/recent';
-    let res = await fetch(url, {
-        credentials: 'same-origin',
-        method: 'GET',
-        headers: {
-            Authorization: 'Bearer ' + store.getState().storeApiKey.apiKey,
-            Accept: 'application/json',
-            'Accept-Charset': 'utf-8',
-            'Accept-Encoding': 'gzip, deflate, br',
-        },
-    });
-    if (res.ok) {
-        return await res.json();
-    } else {
-        return null;
-    }
+	let url = hostUrl + "/tags/recent";
+	let res = await fetch(url, {
+		credentials: "same-origin",
+		method: "GET",
+		headers: {
+			Authorization: "Bearer " + store.getState().storeApiKey.apiKey,
+			Accept: "application/json",
+			"Accept-Charset": "utf-8",
+			"Accept-Encoding": "gzip, deflate, br",
+		},
+	});
+	if (res.ok) {
+		return await res.json();
+	} else {
+		return null;
+	}
 }
 
 /**
@@ -383,80 +456,80 @@ export async function getRecentTags() {
  * @return {Promise<any>} : return result request
  */
 export async function postBasicTag(tag, date) {
-    try {
-        const url = hostUrl + '/tags/one';
-        let res = await fetch(url, {
-            method: 'POST',
-            headers: {
-                Authorization: 'Bearer ' + store.getState().storeApiKey.apiKey,
-                Accept: 'application/json',
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({
-                tag: tag,
-                startDatetime: date,
-                endDatetime: date,
-            }),
-        });
-        if (res.ok) {
-            return await res.json();
-        } else {
-            return null;
-        }
-    } catch (e) {
-        return e;
-    }
+	try {
+		const url = hostUrl + "/tags/one";
+		let res = await fetch(url, {
+			method: "POST",
+			headers: {
+				Authorization: "Bearer " + store.getState().storeApiKey.apiKey,
+				Accept: "application/json",
+				"Content-Type": "application/json",
+			},
+			body: JSON.stringify({
+				tag: tag,
+				startDatetime: date,
+				endDatetime: date,
+			}),
+		});
+		if (res.ok) {
+			return await res.json();
+		} else {
+			return null;
+		}
+	} catch (e) {
+		return e;
+	}
 }
 
 export async function postPendingTag(pendingTags) {
-    try {
-        const url = hostUrl + '/tags/pending';
-        let res = await fetch(url, {
-            method: 'POST',
-            headers: {
-                Authorization: 'Bearer ' + store.getState().storeApiKey.apiKey,
-                Accept: 'application/json',
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({
-                pendingTags: pendingTags
-            }),
-        });
-        if (res.ok) {
-            return await res.json();
-        } else {
-            return null;
-        }
-    } catch (e) {
-        return e;
-    }
+	try {
+		const url = hostUrl + "/tags/pending";
+		let res = await fetch(url, {
+			method: "POST",
+			headers: {
+				Authorization: "Bearer " + store.getState().storeApiKey.apiKey,
+				Accept: "application/json",
+				"Content-Type": "application/json",
+			},
+			body: JSON.stringify({
+				pendingTags: pendingTags,
+			}),
+		});
+		if (res.ok) {
+			return await res.json();
+		} else {
+			return null;
+		}
+	} catch (e) {
+		return e;
+	}
 }
 
 export async function postRange(rangeName, from, to, daysSelected) {
-    try {
-        const url = hostUrl + '/ranges/one';
-        let res = await fetch(url, {
-            method: 'POST',
-            headers: {
-                Authorization: 'Bearer ' + store.getState().storeApiKey.apiKey,
-                Accept: 'application/json',
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({
-                name: rangeName,
-                fromTime: from,
-                toTime: to,
-                daysSelected: daysSelected,
-            }),
-        });
-        if (res.ok) {
-            return await res.json();
-        } else {
-            return null;
-        }
-    } catch (e) {
-        return e;
-    }
+	try {
+		const url = hostUrl + "/ranges/one";
+		let res = await fetch(url, {
+			method: "POST",
+			headers: {
+				Authorization: "Bearer " + store.getState().storeApiKey.apiKey,
+				Accept: "application/json",
+				"Content-Type": "application/json",
+			},
+			body: JSON.stringify({
+				name: rangeName,
+				fromTime: from,
+				toTime: to,
+				daysSelected: daysSelected,
+			}),
+		});
+		if (res.ok) {
+			return await res.json();
+		} else {
+			return null;
+		}
+	} catch (e) {
+		return e;
+	}
 }
 
 /**
@@ -466,22 +539,23 @@ export async function postRange(rangeName, from, to, daysSelected) {
  * @return {Promise<null|any>} : 10 most recent tags or error
  */
 export async function getTagsHistoryByActivationTime(datetimeBegin) {
-    let url = hostUrl + '/tags/recentHistorySorted?datetimeBegin=' + datetimeBegin ;
-    let res = await fetch(url, {
-        credentials: 'same-origin',
-        method: 'GET',
-        headers: {
-            Authorization: 'Bearer ' + store.getState().storeApiKey.apiKey,
-            Accept: 'application/json',
-            'Accept-Charset': 'utf-8',
-            'Accept-Encoding': 'gzip, deflate, br',
-        },
-    });
-    if (res.ok) {
-        return await res.json();
-    } else {
-        return null;
-    }
+	let url =
+		hostUrl + "/tags/recentHistorySorted?datetimeBegin=" + datetimeBegin;
+	let res = await fetch(url, {
+		credentials: "same-origin",
+		method: "GET",
+		headers: {
+			Authorization: "Bearer " + store.getState().storeApiKey.apiKey,
+			Accept: "application/json",
+			"Accept-Charset": "utf-8",
+			"Accept-Encoding": "gzip, deflate, br",
+		},
+	});
+	if (res.ok) {
+		return await res.json();
+	} else {
+		return null;
+	}
 }
 
 /**
@@ -491,22 +565,22 @@ export async function getTagsHistoryByActivationTime(datetimeBegin) {
  * @return {Promise<null|any>} : 10 most recent tags or error
  */
 export async function getTagsHistory(datetimeBegin) {
-    let url = hostUrl + '/tags/recentHistory?datetimeBegin=' + datetimeBegin ;
-    let res = await fetch(url, {
-        credentials: 'same-origin',
-        method: 'GET',
-        headers: {
-            Authorization: 'Bearer ' + store.getState().storeApiKey.apiKey,
-            Accept: 'application/json',
-            'Accept-Charset': 'utf-8',
-            'Accept-Encoding': 'gzip, deflate, br',
-        },
-    });
-    if (res.ok) {
-        return await res.json();
-    } else {
-        return null;
-    }
+	let url = hostUrl + "/tags/recentHistory?datetimeBegin=" + datetimeBegin;
+	let res = await fetch(url, {
+		credentials: "same-origin",
+		method: "GET",
+		headers: {
+			Authorization: "Bearer " + store.getState().storeApiKey.apiKey,
+			Accept: "application/json",
+			"Accept-Charset": "utf-8",
+			"Accept-Encoding": "gzip, deflate, br",
+		},
+	});
+	if (res.ok) {
+		return await res.json();
+	} else {
+		return null;
+	}
 }
 
 /**
@@ -515,57 +589,56 @@ export async function getTagsHistory(datetimeBegin) {
  * @return {Promise<null|any>} count or error
  */
 export async function getCountAllActivations() {
-    let url = hostUrl + '/tags/countAllActivations';
-    let res = await fetch(url, {
-        credentials: 'same-origin',
-        method: 'GET',
-        headers: {
-            Authorization: 'Bearer ' + store.getState().storeApiKey.apiKey,
-            Accept: 'application/json',
-            'Accept-Charset': 'utf-8',
-            'Accept-Encoding': 'gzip, deflate, br',
-        },
-    });
-    if (res.ok) {
-        return await res.json();
-    } else {
-        return null;
-    }
+	let url = hostUrl + "/tags/countAllActivations";
+	let res = await fetch(url, {
+		credentials: "same-origin",
+		method: "GET",
+		headers: {
+			Authorization: "Bearer " + store.getState().storeApiKey.apiKey,
+			Accept: "application/json",
+			"Accept-Charset": "utf-8",
+			"Accept-Encoding": "gzip, deflate, br",
+		},
+	});
+	if (res.ok) {
+		return await res.json();
+	} else {
+		return null;
+	}
 }
 
 export async function getCountAllRanges() {
-    let url = hostUrl + '/ranges/countAll';
-    let res = await fetch(url, {
-        credentials: 'same-origin',
-        method: 'GET',
-        headers: {
-            Authorization: 'Bearer ' + store.getState().storeApiKey.apiKey,
-            Accept: 'application/json',
-            'Accept-Charset': 'utf-8',
-            'Accept-Encoding': 'gzip, deflate, br',
-        },
-    });
-    if (res.ok) {
-        return await res.json();
-    } else {
-        return null;
-    }
+	let url = hostUrl + "/ranges/countAll";
+	let res = await fetch(url, {
+		credentials: "same-origin",
+		method: "GET",
+		headers: {
+			Authorization: "Bearer " + store.getState().storeApiKey.apiKey,
+			Accept: "application/json",
+			"Accept-Charset": "utf-8",
+			"Accept-Encoding": "gzip, deflate, br",
+		},
+	});
+	if (res.ok) {
+		return await res.json();
+	} else {
+		return null;
+	}
 }
 
-
 export async function getPendingTags() {
-    let url = hostUrl + '/tags/pending';
-    let res = await fetch(url, {
-        credentials: 'same-origin',
-        method: 'GET',
-        headers: {
-            Authorization: 'Bearer ' + store.getState().storeApiKey.apiKey,
-            Accept: 'application/json',
-            'Accept-Charset': 'utf-8',
-            'Accept-Encoding': 'gzip, deflate, br',
-        },
-    });
-    return await res.json();
+	let url = hostUrl + "/tags/pending";
+	let res = await fetch(url, {
+		credentials: "same-origin",
+		method: "GET",
+		headers: {
+			Authorization: "Bearer " + store.getState().storeApiKey.apiKey,
+			Accept: "application/json",
+			"Accept-Charset": "utf-8",
+			"Accept-Encoding": "gzip, deflate, br",
+		},
+	});
+	return await res.json();
 }
 
 /**
@@ -577,134 +650,140 @@ export async function getPendingTags() {
  * @return {Promise<null|any>}
  */
 export async function putOneTag(tagName, tagId, tagDatetime) {
-    let url = hostUrl + '/tags/one';
-    let res = await fetch(url, {
-        credentials: 'same-origin',
-        method: 'PUT',
-        headers: {
-            Authorization: 'Bearer ' + store.getState().storeApiKey.apiKey,
-            Accept: 'application/json',
-            'Accept-Charset': 'utf-8',
-            'Accept-Encoding': 'gzip, deflate, br',
-            'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({
-            tagId: tagId,
-            tagDatetime: tagDatetime,
-            tagName: tagName,
-        })
-    });
-    if (res.ok) {
-        return await res.json();
-    } else {
-        return null;
-    }
+	let url = hostUrl + "/tags/one";
+	let res = await fetch(url, {
+		credentials: "same-origin",
+		method: "PUT",
+		headers: {
+			Authorization: "Bearer " + store.getState().storeApiKey.apiKey,
+			Accept: "application/json",
+			"Accept-Charset": "utf-8",
+			"Accept-Encoding": "gzip, deflate, br",
+			"Content-Type": "application/json",
+		},
+		body: JSON.stringify({
+			tagId: tagId,
+			tagDatetime: tagDatetime,
+			tagName: tagName,
+		}),
+	});
+	if (res.ok) {
+		return await res.json();
+	} else {
+		return null;
+	}
 }
 
-export async function putOneRange(rangeName, rangeFrom, rangeTo, rangeDaysSelected, rangeId) {
-    let url = hostUrl + '/ranges/one';
-    let res = await fetch(url, {
-        credentials: 'same-origin',
-        method: 'PUT',
-        headers: {
-            Authorization: 'Bearer ' + store.getState().storeApiKey.apiKey,
-            Accept: 'application/json',
-            'Accept-Charset': 'utf-8',
-            'Accept-Encoding': 'gzip, deflate, br',
-            'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({
-            rangeName: rangeName,
-            rangeFrom: rangeFrom,
-            rangeTo: rangeTo,
-            rangeDaysSelected: rangeDaysSelected,
-            rangeId: rangeId,
-        })
-    });
-    if (res.ok) {
-        return await res.json();
-    } else {
-        return null;
-    }
+export async function putOneRange(
+	rangeName,
+	rangeFrom,
+	rangeTo,
+	rangeDaysSelected,
+	rangeId
+) {
+	let url = hostUrl + "/ranges/one";
+	let res = await fetch(url, {
+		credentials: "same-origin",
+		method: "PUT",
+		headers: {
+			Authorization: "Bearer " + store.getState().storeApiKey.apiKey,
+			Accept: "application/json",
+			"Accept-Charset": "utf-8",
+			"Accept-Encoding": "gzip, deflate, br",
+			"Content-Type": "application/json",
+		},
+		body: JSON.stringify({
+			rangeName: rangeName,
+			rangeFrom: rangeFrom,
+			rangeTo: rangeTo,
+			rangeDaysSelected: rangeDaysSelected,
+			rangeId: rangeId,
+		}),
+	});
+	if (res.ok) {
+		return await res.json();
+	} else {
+		return null;
+	}
 }
 
 export async function deleteOneTag(tagId) {
-    let url = hostUrl + '/tags/one';
-    let res = await fetch(url, {
-        credentials: 'same-origin',
-        method: 'DELETE',
-        headers: {
-            Authorization: 'Bearer ' + store.getState().storeApiKey.apiKey,
-            Accept: 'application/json',
-            'Accept-Charset': 'utf-8',
-            'Accept-Encoding': 'gzip, deflate, br',
-            'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({
-            tagId: tagId
-        })
-    });
-    return [res, await res.json()];
+	let url = hostUrl + "/tags/one";
+	let res = await fetch(url, {
+		credentials: "same-origin",
+		method: "DELETE",
+		headers: {
+			Authorization: "Bearer " + store.getState().storeApiKey.apiKey,
+			Accept: "application/json",
+			"Accept-Charset": "utf-8",
+			"Accept-Encoding": "gzip, deflate, br",
+			"Content-Type": "application/json",
+		},
+		body: JSON.stringify({
+			tagId: tagId,
+		}),
+	});
+	return [res, await res.json()];
 }
 
 export async function deleteOneRange(rangeId) {
-    let url = hostUrl + '/ranges/one';
-    let res = await fetch(url, {
-        credentials: 'same-origin',
-        method: 'DELETE',
-        headers: {
-            Authorization: 'Bearer ' + store.getState().storeApiKey.apiKey,
-            Accept: 'application/json',
-            'Accept-Charset': 'utf-8',
-            'Accept-Encoding': 'gzip, deflate, br',
-            'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({
-            rangeId: rangeId
-        })
-    });
-    return [res, await res.json()];
+	let url = hostUrl + "/ranges/one";
+	let res = await fetch(url, {
+		credentials: "same-origin",
+		method: "DELETE",
+		headers: {
+			Authorization: "Bearer " + store.getState().storeApiKey.apiKey,
+			Accept: "application/json",
+			"Accept-Charset": "utf-8",
+			"Accept-Encoding": "gzip, deflate, br",
+			"Content-Type": "application/json",
+		},
+		body: JSON.stringify({
+			rangeId: rangeId,
+		}),
+	});
+	return [res, await res.json()];
 }
 
 export async function deleteAllTags(tagName) {
-    let url = hostUrl + '/tags/all';
-    let res = await fetch(url, {
-        credentials: 'same-origin',
-        method: 'DELETE',
-        headers: {
-            Authorization: 'Bearer ' + store.getState().storeApiKey.apiKey,
-            Accept: 'application/json',
-            'Accept-Charset': 'utf-8',
-            'Accept-Encoding': 'gzip, deflate, br',
-            'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({
-            tagName: tagName
-        })
-    });
-    return [res, await res.json()];
+	let url = hostUrl + "/tags/all";
+	let res = await fetch(url, {
+		credentials: "same-origin",
+		method: "DELETE",
+		headers: {
+			Authorization: "Bearer " + store.getState().storeApiKey.apiKey,
+			Accept: "application/json",
+			"Accept-Charset": "utf-8",
+			"Accept-Encoding": "gzip, deflate, br",
+			"Content-Type": "application/json",
+		},
+		body: JSON.stringify({
+			tagName: tagName,
+		}),
+	});
+	return [res, await res.json()];
 }
 
 export async function putAllTags(tagName, newTagName) {
-    let url = hostUrl + '/tags/all';
-    let res = await fetch(url, {
-        credentials: 'same-origin',
-        method: 'PUT',
-        headers: {
-            Authorization: 'Bearer ' + store.getState().storeApiKey.apiKey,
-            Accept: 'application/json',
-            'Accept-Charset': 'utf-8',
-            'Accept-Encoding': 'gzip, deflate, br',
-            'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({
-            tagName: tagName,
-            newTagName: newTagName
-        })
-    });
-    if (res.ok) {
-        return await res.json();
-    } else {
-        return null;
-    }
+	let url = hostUrl + "/tags/all";
+	let res = await fetch(url, {
+		credentials: "same-origin",
+		method: "PUT",
+		headers: {
+			Authorization: "Bearer " + store.getState().storeApiKey.apiKey,
+			Accept: "application/json",
+			"Accept-Charset": "utf-8",
+			"Accept-Encoding": "gzip, deflate, br",
+			"Content-Type": "application/json",
+		},
+		body: JSON.stringify({
+			tagName: tagName,
+			newTagName: newTagName,
+		}),
+	});
+	if (res.ok) {
+		return await res.json();
+	} else {
+		return null;
+	}
 }
