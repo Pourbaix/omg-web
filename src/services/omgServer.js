@@ -67,7 +67,7 @@ export async function getRangesWithFormattedTimes() {
 }
 
 export async function getBolusWithFormattedDateAndTime() {
-	let url = hostUrl + "/bolus/dateandtime";
+	let url = hostUrl + "/insulin/dateandtime";
 	let res = await fetch(url, {
 		credentials: "same-origin",
 		method: "GET",
@@ -148,6 +148,30 @@ export async function postUpload(file, sensorModel, importName) {
 	} catch (e) {
 		return e;
 	}
+}
+
+export async function getLast24hData(hoursNumber) {
+	if (
+		typeof hoursNumber !== "number" ||
+		hoursNumber > 72 ||
+		hoursNumber < 1
+	) {
+		return 0;
+	}
+	let url = hostUrl + "/data/last24hData" + "?hours=" + hoursNumber;
+	let res = await fetch(url, {
+		credentials: "same-origin",
+		method: "GET",
+		headers: {
+			"Content-Type": "application/json",
+			Accept: "application/json",
+			"Accept-Charset": "utf-8",
+			"Accept-Encoding": "gzip, deflate, br",
+			Authorization: "Bearer " + store.getState().storeApiKey.apiKey,
+		},
+	});
+	console.log("request send");
+	return res.json();
 }
 
 /**

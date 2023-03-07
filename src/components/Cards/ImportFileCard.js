@@ -574,7 +574,7 @@ class ImportFileCard extends Component {
 							/>
 							{this.showButton()}
 						</div>
-						<div className="float-end">
+						<div className="float-end d-flex align-items-center gap-1">
 							<input
 								className="form-check-input "
 								type="checkbox"

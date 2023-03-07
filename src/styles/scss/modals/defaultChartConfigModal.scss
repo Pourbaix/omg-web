@@ -1,0 +1,153 @@
+.main_container {
+	width: calc(100% - 14rem);
+	height: 100vh;
+	position: fixed;
+	left: 14rem;
+	top: 0;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	backdrop-filter: blur(2px);
+}
+
+.popup {
+	display: flex;
+	position: relative;
+	flex-direction: column;
+	align-items: center;
+	padding: 15px;
+	width: 65%;
+	background-color: #f8f9fc;
+	border-radius: 3px;
+	border: 1px solid rgba(0, 0, 0, 0.5);
+	.popup_closer {
+		position: absolute;
+		top: 0;
+		right: 10px;
+		cursor: pointer;
+		font-weight: bold;
+		font-size: 25px;
+	}
+	.popup_title {
+		color: rgba(0, 0, 0, 0.8);
+		border-bottom: 2px solid rgba(0, 0, 0, 0.8);
+	}
+	.popup_content {
+		display: flex;
+		width: 100%;
+		height: 100%;
+		justify-content: space-around;
+		padding-top: 10px;
+		.popup_leftside {
+			display: flex;
+			flex-direction: column;
+			padding-left: 15px;
+			width: 100%;
+			h5 {
+				color: rgba(0, 0, 0, 0.8);
+				position: relative;
+			}
+			h5::before {
+				content: "▹";
+				position: absolute;
+				left: -15px;
+				top: 0;
+				color: #4e73df;
+			}
+			label {
+				margin-right: 15px;
+				margin-left: 5px;
+				cursor: pointer;
+				position: relative;
+				overflow: visible;
+				color: rgba(0, 0, 0, 0.7);
+			}
+			label:hover::after {
+				content: "";
+				position: absolute;
+				left: 0;
+				top: 100%;
+				width: 100%;
+				height: 2px;
+				background: #4e73df;
+			}
+			input {
+				cursor: pointer;
+			}
+			select {
+				border-radius: 2px;
+				border: none;
+				outline: 1px solid rgba(0, 0, 0, 0.3);
+				transition: 0.2s ease;
+			}
+			select:hover {
+				outline: 2px solid #4e73df;
+				transform: scale(1.02);
+				transition: 0.2s ease;
+			}
+			select:active {
+				text-decoration: none;
+				outline: none;
+			}
+			.period_selector {
+				display: flex;
+				align-items: center;
+				padding: 3px;
+				p {
+					margin: 0;
+				}
+				label {
+					margin-right: 15px;
+					margin-left: 5px;
+					cursor: default;
+				}
+				label:hover::after {
+					width: 0;
+				}
+				input[type="number"] {
+					cursor: text;
+					margin-left: 5px;
+				}
+				input[type="number"]:focus {
+					outline: none;
+				}
+			}
+			.error_message {
+				color: red;
+				width: 100%;
+				text-align: center;
+				margin: 0;
+				margin-top: 15px;
+			}
+		}
+	}
+}
+
+// .save_button {
+// 	background-color: #4e73df;
+// }
+
+// .good_button {
+// 	background-color: rgb(37, 210, 37);
+// }
+
+// .button {
+// 	display: flex;
+// 	align-items: center;
+// 	border: none;
+// 	border-radius: 5px;
+// 	gap: 5px;
+// 	margin-top: 25px;
+// 	color: white;
+// 	padding: 8px;
+// }
+
+// .save_logo {
+// 	width: 25px;
+// }
+
+// .checked {
+// 	fill: white;
+// 	color: white;
+// 	width: 20px;
+// }

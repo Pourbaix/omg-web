@@ -276,6 +276,7 @@ class ActivateBasicTag extends Component {
 									}
 									value={tag}
 									onClick={this.recentTagClick}
+									style={{ opacity: 0, position: "fixed" }}
 								/>
 								{tag}
 							</label>
