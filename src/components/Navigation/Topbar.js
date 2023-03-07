@@ -20,13 +20,14 @@ class Topbar extends Component {
 		let routesDict = {
 			"/": "Home",
 			"/index": "Home",
-			"/datamanager": "Data Manager",
-			"/tagsmanager": "Tags Manager",
+			"/dataManager": "Data Manager",
+			"/tagsManager": "Tags Manager",
 			"/tagactivation": "Tag Creation",
 			"/tagshistory": "History",
-			"/fileUpload": "Import Data",
+			"/import": "Import Data",
 			"/tagdetection": "Tag Detection",
-			"/chartsbyTag": "Charts by tag",
+			"/chartsbytag": "Charts by tag",
+			"/pendingtags": "Pending Tags",
 		};
 		if (routesDict.hasOwnProperty(window.location.pathname)) {
 			console.log(routesDict.hasOwnProperty(window.location.pathname));
@@ -41,7 +42,6 @@ class Topbar extends Component {
 	}
 
 	render() {
-		console.log("render");
 		return (
 			<nav className="navbar navbar-expand navbar-light bg-white topbar mb-4 static-top shadow">
 				{/* <!-- Topbar Navbar --> */}
