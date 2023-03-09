@@ -84,6 +84,7 @@ const DefaultChartConfigModal = (props) => {
 						>
 							<input
 								type="radio"
+								id="glucose"
 								value="glucose"
 								name="type"
 								ref={glucoseRadio}
@@ -103,6 +104,7 @@ const DefaultChartConfigModal = (props) => {
 							</label>
 							<input
 								type="radio"
+								id="insulin"
 								value="insulin"
 								name="type"
 								ref={insulinRadio}
@@ -148,6 +150,7 @@ const DefaultChartConfigModal = (props) => {
 						<div className="period_selector">
 							<input
 								type="radio"
+								id="24h"
 								name="timePeriod"
 								value="24"
 								className="form-check-input"
@@ -156,11 +159,12 @@ const DefaultChartConfigModal = (props) => {
 									otherPeriod.current.disabled = true;
 								}}
 							/>
-							<label htmlFor="24" className="form-check-label">
+							<label htmlFor="24h" className="form-check-label">
 								24h
 							</label>
 							<input
 								type="radio"
+								id="48h"
 								name="timePeriod"
 								value="48"
 								className="form-check-input"
@@ -169,11 +173,12 @@ const DefaultChartConfigModal = (props) => {
 									otherPeriod.current.disabled = true;
 								}}
 							/>
-							<label htmlFor="48" className="form-check-label">
+							<label htmlFor="48h" className="form-check-label">
 								48h
 							</label>
 							<input
 								type="radio"
+								id="72h"
 								name="timePeriod"
 								value="72"
 								className="form-check-input"
@@ -182,7 +187,7 @@ const DefaultChartConfigModal = (props) => {
 									otherPeriod.current.disabled = true;
 								}}
 							/>
-							<label htmlFor="72" className="form-check-label">
+							<label htmlFor="72h" className="form-check-label">
 								72h
 							</label>
 							<input
@@ -194,7 +199,6 @@ const DefaultChartConfigModal = (props) => {
 									setTimePeriod("other");
 									otherPeriod.current.disabled = false;
 								}}
-								on
 							/>
 							<input
 								type="number"
