@@ -156,10 +156,10 @@ const DefaultHomeChart = (props) => {
 				title.current = "Glucose level for last " + period + "H";
 				lableTitle.current = "Glucose Level";
 				pointsRadius.current = 0;
-			} else if (dataType == "insulin") {
+			} else if (dataType == "correction") {
 				dataToDisplay = response["InsulinData"]
 					.filter((x) => {
-						return x.insulinType == "INSULIN";
+						return x.insulinType == "CORRECTION";
 					})
 					.sort((a, b) => {
 						return new Date(a.datetime) - new Date(b.datetime);
@@ -172,8 +172,8 @@ const DefaultHomeChart = (props) => {
 					})
 				);
 				setLabels(dataToDisplay.map((x) => x.datetime));
-				lableTitle.current = "Insulin Bolus";
-				title.current = "Bolus for last " + period + "H";
+				lableTitle.current = "Correction Bolus";
+				title.current = "Correction bolus for last " + period + "H";
 			} else if (dataType == "meal") {
 				dataToDisplay = response["InsulinData"]
 					.filter((x) => {

@@ -37,7 +37,7 @@ const DefaultChartConfigModal = (props) => {
 			return 0;
 		}
 		if (selectedType == "insulin") {
-			if (["meal", "basal", "insulin"].includes(insulinType)) {
+			if (["meal", "basal", "correction"].includes(insulinType)) {
 				selectedType = insulinType;
 			} else {
 				setError("Please select an insulin type !");
@@ -139,7 +139,9 @@ const DefaultChartConfigModal = (props) => {
 										</option>
 										<option value="meal">Meal</option>
 										<option value="basal">Basal</option>
-										<option value="insulin">Insulin</option>
+										<option value="correction">
+											Correction
+										</option>
 									</select>
 								</div>
 							) : (
