@@ -14,6 +14,7 @@ class Topbar extends Component {
 	logout() {
 		store.dispatch({ type: "SETKEY", value: "" });
 		this.setCookie("apiKey", "");
+		window.location = window.location.origin;
 	}
 
 	setTitle() {
@@ -86,7 +87,9 @@ class Topbar extends Component {
 								className="dropdown-item"
 								data-toggle="modal"
 								data-target="#logoutModal"
-								onClick={() => this.logout()}
+								onClick={() => {
+									this.logout();
+								}}
 							>
 								<i className="fas fa-sign-out-alt fa-sm fa-fw me-2 text-gray-400" />
 								Logout

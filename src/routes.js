@@ -22,6 +22,7 @@ import TagActivation from "./pages/TagActivation";
 import TagsHistory from "./pages/TagHistory";
 import TagDetection from "./pages/TagDetection";
 import PendingTags from "./pages/PendingTags";
+import LoadingPage from "./pages/LoadingPage";
 
 /**
  * Routing component. Manage authentification too.
@@ -143,8 +144,12 @@ class RoutesList extends Component {
 							<div className="row">
 								{/* <Navigate to="/index" replace={true} /> */}
 								<Routes>
-									<Route index path="/" element={<Home />} />
-									<Route path="/index" element={<Home />} />
+									<Route
+										index
+										path="/"
+										element={<LoadingPage />}
+									/>
+									<Route path="/home" element={<Home />} />
 									<Route
 										path="/datamanager"
 										element={<DataManager />}

@@ -39,7 +39,6 @@ class SignIn extends Component {
 					expires: expiresDate,
 				});
 				await this.setApiKey(res.token);
-				await autoImportData();
 				return <Navigate to="/" />;
 			}
 		} else {
