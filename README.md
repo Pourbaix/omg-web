@@ -1,4 +1,27 @@
-# Getting Started with Create React App
+# Welcome to Oh My Glucose Repository ! 
+
+![image](https://user-images.githubusercontent.com/71372371/224793650-530aeaad-092e-4c20-9141-4e9f760e18be.png)
+
+### This application is build by students for their TFE.
+
+The main goal is to produce an app for diabetics to help them better manage their disease.
+
+This app mainly provides: 
+- systems to import insulin and glucose datas
+- tags to mark event 
+- charts (graphs) to view the datas and the tags 
+
+This is the frontend part of the app, it is also composed of a backend side, click [here](https://github.com/Pourbaix/omg-server) to go to this repository.
+
+## How do I use this app ?
+
+To use the app locally on your computer, you need to first download both the frontend and the backend part of the application by using the `git clone` command:
+ => For Frontend side: `git clone https://github.com/Pourbaix/omg-web/`
+ => For Backend side: `git clone https://github.com/Pourbaix/omg-server`
+ 
+Here, we will only see how to setup the frontend part, for the backend configuration, click [here](https://github.com/Pourbaix/omg-server). 
+
+## Getting Started with Create React App
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
