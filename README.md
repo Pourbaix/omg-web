@@ -2,7 +2,7 @@
 
 ![image](https://user-images.githubusercontent.com/71372371/224793650-530aeaad-092e-4c20-9141-4e9f760e18be.png)
 
-### This application is build by students for their TFE.
+### This application is built by students for their TFE.
 
 The main goal is to produce an app for diabetics to help them better manage their disease.
 
