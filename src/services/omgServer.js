@@ -34,6 +34,22 @@ export async function getAllTagsFromUserId() {
 	return res.json();
 }
 
+export async function getAllTagsWithoutData() {
+	let url = hostUrl + "/tags/withNoData";
+	let res = await fetch(url, {
+		credentials: "same-origin",
+		method: "GET",
+		headers: {
+			"Content-Type": "application/json",
+			Accept: "application/json",
+			"Accept-Charset": "utf-8",
+			"Accept-Encoding": "gzip, deflate, br",
+			Authorization: "Bearer " + store.getState().storeApiKey.apiKey,
+		},
+	});
+	return res.json();
+}
+
 export async function getRangesHistory() {
 	let url = hostUrl + "/ranges/all";
 	let res = await fetch(url, {

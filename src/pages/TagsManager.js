@@ -4,12 +4,15 @@ import {
 	getAllTagsFromUserId,
 	getTagsDay,
 	getTagsDays,
+	getAllTagsWithoutData,
+	deleteOneTag,
 } from "../services/omgServer";
 import CardMobile from "../components/Cards/CardMobile";
 import EditTagActivationDialog from "../components/Dialogs/EditTagActivationDialog";
 import DeleteTagActivationDialog from "../components/Dialogs/DeleteTagActivationDialog";
 import DeleteTagDialog from "../components/Dialogs/DeleteTagDialog";
 import EditTagNameDialog from "../components/Dialogs/EditTagNameDialog";
+import CardBasicTitle from "../components/Cards/CardBasicTitle";
 
 class TagsManager extends Component {
 	constructor(props) {
@@ -22,6 +25,7 @@ class TagsManager extends Component {
 			selectedDay: "",
 			tagsDay: [],
 			toggleView: "viewByDay",
+			tagWithoutData: [],
 		};
 	}
 
@@ -58,6 +62,20 @@ class TagsManager extends Component {
 		});
 	};
 
+	refreshTagsWithNoData = () => {
+		this.setState({ tagWithoutData: [] });
+		getAllTagsWithoutData().then((res) => {
+			console.log(res);
+			this.setState({ tagWithoutData: res });
+		});
+	};
+
+	deleteTag = (tagId, index) => {
+		this.state.tagWithoutData.splice(index, 1);
+		deleteOneTag(tagId);
+		this.refreshTagsWithNoData();
+	};
+
 	componentDidMount() {
 		getAllTagsFromUserId().then((res) => {
 			res.unshift("All");
@@ -65,6 +83,7 @@ class TagsManager extends Component {
 			this.setState({ loadingTags: false });
 			this.setState({ selectedTagName: "All" });
 		});
+		this.refreshTagsWithNoData();
 		this.refreshDataDays();
 	}
 
@@ -108,12 +127,6 @@ class TagsManager extends Component {
 		} else {
 			selector = (
 				<div>
-					<label
-						className={"form-check-label"}
-						htmlFor={"chooseTagsManager"}
-					>
-						Choose a tag
-					</label>
 					<select
 						id={"chooseTagsManager"}
 						className={"form-control mb-3"}
@@ -135,7 +148,7 @@ class TagsManager extends Component {
 	setCalendar() {
 		return (
 			<div className={"mb-4 d-flex flex-column align-items-center"}>
-				<label className={"form-check-label"}>
+				<label className={"form-check-label fw-bold"}>
 					Select a day to see all related tags{" "}
 				</label>
 				<Calendar
@@ -236,7 +249,11 @@ class TagsManager extends Component {
 					</div>
 				);
 			} else {
-				return <div className={"mb-4"}>No tag created this day</div>;
+				return (
+					<div className={"mb-4 text-center"}>
+						No tag created this day
+					</div>
+				);
 			}
 		}
 	}
@@ -259,25 +276,81 @@ class TagsManager extends Component {
 				<div className={"d-flex justify-content-center"}>
 					<DeleteTagDialog tagName={selectedTagName} />
 				</div>
-				<div className={"mt-4"} />
-				<div className={"mt-4"} />
 			</div>
+		);
+	}
+
+	setTagWithNoData() {
+		return (
+			<CardBasicTitle color={"warning"} title={"Unused Tags"}>
+				{/* <p className={"text-danger text-center"}>
+					Warning ! These operations are irreversible
+				</p> */}
+				<p className={"fw-bold text-black"}>
+					These tags are not associated with any data:
+				</p>
+				<div
+					className="d-flex align-items-center flex-column gap-1"
+					style={{ maxHeight: "60vh", overflowY: "auto" }}
+				>
+					{this.state.tagWithoutData.lenght ? (
+						this.state.tagWithoutData.map((elem) => (
+							<div
+								className="px-2 py-1 w-100 border border-2 d-flex justify-content-between align-items-center"
+								style={{ borderRadius: "3px" }}
+								key={elem.id}
+							>
+								<div className="d-flex flex-column">
+									<p className="m-0 fw-bold">{elem.name}</p>
+									<p className="m-0">
+										{new Date(
+											elem.startDatetime
+										).toLocaleString()}
+									</p>
+								</div>
+								<p
+									className="m-0 me-3 ms-3 fs-5 fw-bold text-danger"
+									style={{ cursor: "pointer" }}
+									onClick={() => {
+										this.deleteTag(
+											elem.id,
+											this.state.tagWithoutData.indexOf(
+												elem
+											)
+										);
+									}}
+								>
+									X
+								</p>
+							</div>
+						))
+					) : (
+						<p>No tags detected</p>
+					)}
+				</div>
+			</CardBasicTitle>
 		);
 	}
 
 	render() {
 		return (
-			<div className={"container-fluid"}>
-				<div className={"d-flex flex-column"}>
-					{this.setTagNamesSelector()}
-					{this.setCalendar()}
-					{this.setEditActivationsByDay()}
-					{this.state.selectedTagName ? (
-						this.setEditTag(this.state.selectedTagName)
-					) : (
-						<div />
-					)}
-				</div>
+			<div className={"d-flex flex-row align-items-start ps-4"}>
+				<CardBasicTitle title={"Choose a tag"}>
+					<div
+						className={"d-flex flex-column"}
+						style={{ width: "100%" }}
+					>
+						{this.setTagNamesSelector()}
+						{this.setCalendar()}
+						{this.setEditActivationsByDay()}
+						{this.state.selectedTagName ? (
+							this.setEditTag(this.state.selectedTagName)
+						) : (
+							<div />
+						)}
+					</div>
+				</CardBasicTitle>
+				{this.setTagWithNoData()}
 			</div>
 		);
 	}
