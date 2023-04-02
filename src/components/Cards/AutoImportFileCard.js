@@ -1,6 +1,7 @@
 import {
 	postAutoImportCredentials,
 	checkAutoImportConfig,
+	deleteAutoImportConfiguration,
 } from "../../services/omgServer";
 import { useEffect, useRef, useState } from "react";
 import Loading from "../../assets/loading.svg";
@@ -15,6 +16,7 @@ const AutoImportFileCard = () => {
 	const country = useRef(null);
 	const [error, setError] = useState("");
 	const [buttonState, setButtonState] = useState(0);
+	const [deleteButtonState, setDeleteButtonState] = useState(0);
 	const [autoImportConfigured, setAutoImportConfigured] = useState(false);
 
 	const handleSubmit = async () => {
@@ -136,12 +138,48 @@ const AutoImportFileCard = () => {
 		}
 	};
 
+	const renderDeleteButton = () => {
+		if (autoImportConfigured) {
+			if (deleteButtonState == 0) {
+				return (
+					<button
+						className="btn btn-danger"
+						onClick={() => {
+							setDeleteButtonState(1);
+						}}
+					>
+						Delete config
+					</button>
+				);
+			} else {
+				return (
+					<button
+						className="btn btn-danger text-light"
+						onClick={() => {
+							handleDeletion();
+						}}
+					>
+						Sure?
+					</button>
+				);
+			}
+		} else {
+			return "";
+		}
+	};
+
+	const handleDeletion = async () => {
+		let res = await deleteAutoImportConfiguration();
+		window.location.reload();
+	};
+
 	const initComponent = async () => {
 		let response = await checkAutoImportConfig();
-		console.log(response);
 		if (response) {
+			setAutoImportConfigured(true);
 			setFormToConfiguredState();
 		} else {
+			setAutoImportConfigured(false);
 			initialState();
 		}
 		return 1;
@@ -228,8 +266,12 @@ const AutoImportFileCard = () => {
 						</div>
 					</div>
 				</form>
-				<div className="d-flex justify-content-center">
+				<div
+					className="d-flex flex-column align-items-center justify-content-center"
+					style={{ gap: "15px" }}
+				>
 					{renderButton()}
+					{renderDeleteButton()}
 				</div>
 				{error ? (
 					<div

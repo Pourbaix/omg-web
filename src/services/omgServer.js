@@ -166,7 +166,7 @@ export async function postUpload(file, sensorModel, importName) {
 	}
 }
 
-export async function getLast24hData(hoursNumber) {
+export async function getLastXhData(hoursNumber) {
 	if (
 		typeof hoursNumber !== "number" ||
 		hoursNumber > 72 ||
@@ -174,7 +174,7 @@ export async function getLast24hData(hoursNumber) {
 	) {
 		return 0;
 	}
-	let url = hostUrl + "/data/last24hData" + "?hours=" + hoursNumber;
+	let url = hostUrl + "/data/lastXhData" + "?hours=" + hoursNumber;
 	let res = await fetch(url, {
 		credentials: "same-origin",
 		method: "GET",
@@ -440,6 +440,22 @@ export async function autoImportData() {
 			"Accept-Charset": "utf-8",
 			"Accept-Encoding": "gzip, deflate, br",
 			Authorization: "Bearer " + store.getState().storeApiKey.apiKey,
+		},
+	});
+	return await res.json();
+}
+
+export async function deleteAutoImportConfiguration() {
+	let url = hostUrl + "/data/deleteAutoImportConfiguration";
+	let res = await fetch(url, {
+		credentials: "same-origin",
+		method: "DELETE",
+		headers: {
+			Authorization: "Bearer " + store.getState().storeApiKey.apiKey,
+			Accept: "application/json",
+			"Accept-Charset": "utf-8",
+			"Accept-Encoding": "gzip, deflate, br",
+			"Content-Type": "application/json",
 		},
 	});
 	return await res.json();
