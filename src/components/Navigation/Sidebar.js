@@ -42,13 +42,22 @@ class Sidebar extends Component {
 					<hr className="sidebar-divider" />
 
 					{/* <!-- Heading --> */}
-					<div className="sidebar-heading">Charts</div>
+					<div className="sidebar-heading">Visualize</div>
 
 					{/* <!-- Nav Item - Home --> */}
 					<li className="nav-item">
-						<Link className="nav-link" to="/chartsbytag">
+						<Link className="nav-link pb-2" to="/chartsbytag">
 							<i className="fas fa-fw fa-tag" />
 							<span>By Tag</span>
+						</Link>
+					</li>
+
+					{/* <!-- Nav Item - Statistics --> */}
+
+					<li className="nav-item">
+						<Link className="nav-link pt-2 " to="/statistics">
+							<i className="fas fa-fw fa-chart-line" />
+							<span>Statistics</span>
 						</Link>
 					</li>
 

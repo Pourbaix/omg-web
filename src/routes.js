@@ -23,6 +23,7 @@ import TagsHistory from "./pages/TagHistory";
 import TagDetection from "./pages/TagDetection";
 import PendingTags from "./pages/PendingTags";
 import LoadingPage from "./pages/LoadingPage";
+import Statistics from "./pages/Statistics";
 
 /**
  * Routing component. Manage authentification too.
@@ -173,6 +174,10 @@ class RoutesList extends Component {
 									<Route
 										path="/chartsbytag"
 										element={<ChartsByTag />}
+									/>
+									<Route
+										path="/statistics"
+										element={<Statistics />}
 									/>
 									<Route
 										path="/tagdetection"
