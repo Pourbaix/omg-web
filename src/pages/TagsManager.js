@@ -293,7 +293,7 @@ class TagsManager extends Component {
 					className="d-flex align-items-center flex-column gap-1"
 					style={{ maxHeight: "60vh", overflowY: "auto" }}
 				>
-					{this.state.tagWithoutData.lenght ? (
+					{this.state.tagWithoutData.length ? (
 						this.state.tagWithoutData.map((elem) => (
 							<div
 								className="px-2 py-1 w-100 border border-2 d-flex justify-content-between align-items-center"
