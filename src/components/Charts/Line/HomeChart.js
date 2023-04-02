@@ -15,7 +15,7 @@ import {
 import { useRef, useEffect, useState } from "react";
 import { Line, Bar } from "react-chartjs-2";
 import "chartjs-adapter-date-fns";
-import { getLast24hData } from "../../../services/omgServer";
+import { getLastXhData } from "../../../services/omgServer";
 
 const DefaultHomeChart = (props) => {
 	const [dataSet, setDataSet] = useState([]);
@@ -147,7 +147,7 @@ const DefaultHomeChart = (props) => {
 		}
 		const getData = async () => {
 			console.log(period);
-			let response = await getLast24hData(parseInt(period));
+			let response = await getLastXhData(parseInt(period));
 			console.log(response);
 			let dataToDisplay = [];
 			if (dataType == "glucose") {
