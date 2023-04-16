@@ -350,6 +350,48 @@ export async function getImportNames() {
 	return res.json();
 }
 
+export async function getDataInRange(startDate, endDate) {
+	let url =
+		hostUrl +
+		"/data/getDataInRange?startDate=" +
+		startDate +
+		"&endDate=" +
+		endDate;
+	let res = await fetch(url, {
+		credentials: "same-origin",
+		method: "GET",
+		headers: {
+			"Content-Type": "application/json",
+			Accept: "application/json",
+			"Accept-Charset": "utf-8",
+			"Accept-Encoding": "gzip, deflate, br",
+			Authorization: "Bearer " + store.getState().storeApiKey.apiKey,
+		},
+	});
+	return res.json();
+}
+
+export async function getTagsInRange(startDate, endDate) {
+	let url =
+		hostUrl +
+		"/tags/tagsInRange?startDate=" +
+		startDate +
+		"&endDate=" +
+		endDate;
+	let res = await fetch(url, {
+		credentials: "same-origin",
+		method: "GET",
+		headers: {
+			"Content-Type": "application/json",
+			Accept: "application/json",
+			"Accept-Charset": "utf-8",
+			"Accept-Encoding": "gzip, deflate, br",
+			Authorization: "Bearer " + store.getState().storeApiKey.apiKey,
+		},
+	});
+	return res.json();
+}
+
 export async function deleteFile(importName) {
 	let url = hostUrl + "/data/file";
 	let res = await fetch(url, {
@@ -385,6 +427,23 @@ export async function deleteAll() {
 	} catch (e) {
 		console.log(e);
 	}
+}
+
+export async function checkMissingData() {
+	let url = hostUrl + "/data/rangesWithNoData";
+	let res = await fetch(url, {
+		credentials: "same-origin",
+		method: "GET",
+		headers: {
+			"Content-Type": "application/json",
+			Accept: "application/json",
+			"Accept-Charset": "utf-8",
+			"Accept-Encoding": "gzip, deflate, br",
+			Authorization: "Bearer " + store.getState().storeApiKey.apiKey,
+		},
+	});
+	console.log("request send");
+	return res.json();
 }
 
 export async function postAutoImportCredentials(username, password, country) {
