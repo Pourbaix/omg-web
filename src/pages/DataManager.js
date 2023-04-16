@@ -6,6 +6,7 @@ import {
 	deleteFile,
 	getDataDays,
 	getImportNames,
+	checkMissingData,
 } from "../services/omgServer";
 import CardBasicTitle from "../components/Cards/CardBasicTitle";
 
@@ -16,6 +17,7 @@ class DataManager extends Component {
 	state = {
 		dataDays: [],
 		importNames: [],
+		missingDataList: [],
 		selectedImport: "none",
 		deleteResults: "",
 	};
@@ -38,6 +40,9 @@ class DataManager extends Component {
 		}
 
 		getImportNames().then((res) => this.setState({ importNames: res }));
+		checkMissingData().then((res) => {
+			this.setState({ missingDataList: res });
+		});
 	};
 
 	componentDidMount() {
@@ -177,54 +182,95 @@ class DataManager extends Component {
 		let ret = <div />;
 		if (this.state.dataDays.length > 0) {
 			ret = (
-				<CardBasicTitle color={"warning"} title={"Delete data"}>
-					<p className={"text-danger text-center"}>
-						Warning ! These operations are irreversible
-					</p>
-					<p className={"fw-bold"}>Revert an import</p>
-					<div className="d-flex align-items-center">
-						<select
-							id={"revertImportSelector"}
-							className={"form-control"}
-							onChange={this.selectedImportChange}
-							defaultValue={"none"}
-						>
-							<option
-								id={"selectedOptionRevertImportSelector"}
-								value={"none"}
+				<div style={{ maxWidth: "450px" }}>
+					<CardBasicTitle color={"warning"} title={"Delete data"}>
+						<p className={"text-danger text-center"}>
+							Warning ! These operations are irreversible
+						</p>
+						<p className={"fw-bold"}>Revert an import</p>
+						<div className="d-flex align-items-center">
+							<select
+								id={"revertImportSelector"}
+								className={"form-control"}
+								onChange={this.selectedImportChange}
+								defaultValue={"none"}
 							>
-								Loading...
-							</option>
-						</select>
+								<option
+									id={"selectedOptionRevertImportSelector"}
+									value={"none"}
+								>
+									Loading...
+								</option>
+							</select>
+							<button
+								id={"revertButton"}
+								className={"btn btn-outline-warning ms-3"}
+								onClick={this.revertClick}
+							>
+								Revert
+							</button>
+						</div>
+						<div
+							id={"revertForm"}
+							className={"text-center text-danger mt-2"}
+						/>
+						<div className={"mt-4"} />
+						<p className={"fw-bold"}>Erase all data</p>
 						<button
-							id={"revertButton"}
-							className={"btn btn-outline-warning ms-3"}
-							onClick={this.revertClick}
+							id={"eraseButton"}
+							className={"btn btn-outline-danger"}
+							onClick={this.eraseClick}
 						>
-							Revert
+							Delete all data
 						</button>
-					</div>
-					<div
-						id={"revertForm"}
-						className={"text-center text-danger mt-2"}
-					/>
-					<div className={"mt-4"} />
-					<p className={"fw-bold"}>Erase all data</p>
-					<button
-						id={"eraseButton"}
-						className={"btn btn-outline-danger"}
-						onClick={this.eraseClick}
-					>
-						Delete all data
-					</button>
-					<div
-						id={"eraseForm"}
-						className={"text-center text-danger mt-2"}
-					/>
-				</CardBasicTitle>
+						<div
+							id={"eraseForm"}
+							className={"text-center text-danger mt-2"}
+						/>
+					</CardBasicTitle>
+				</div>
 			);
 		}
 		return ret;
+	}
+
+	setRangesWithNoData() {
+		return (
+			<div>
+				<CardBasicTitle
+					color={"warning"}
+					title={"Ranges with no data"}
+					className="m-0"
+				>
+					<p>List of all period of time without any data:</p>
+					<div style={{ maxHeight: "60vh", overflowY: "auto" }}>
+						{this.state.missingDataList.map((e) => {
+							return (
+								<div
+									className="d-flex p-2 border rounded m-1"
+									style={{ gap: "5px" }}
+									key={e.start + e.end}
+								>
+									<p className="mb-0 fst-italic text-center">
+										{new Date(e.start)
+											.toLocaleString()
+											.slice(0, -3)}
+									</p>
+									<p className="mb-0 fw-bold text-center">
+										To
+									</p>
+									<p className="mb-0 fst-italic text-center">
+										{new Date(e.end)
+											.toLocaleString()
+											.slice(0, -3)}
+									</p>
+								</div>
+							);
+						})}
+					</div>
+				</CardBasicTitle>
+			</div>
+		);
 	}
 
 	render() {
@@ -234,6 +280,7 @@ class DataManager extends Component {
 					{this.setCalendar()}
 				</CardBasicTitle>
 				{this.setDeleteCard()}
+				{this.setRangesWithNoData()}
 			</div>
 		);
 	}
