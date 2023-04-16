@@ -2,8 +2,8 @@ import "../../styles/scss/stats/indicatorBar.scss";
 import { useEffect, useRef, useState } from "react";
 
 const IndicatorBar = (props) => {
-	const [min, setMin] = useState(props.min ? props.min : 80);
-	const [max, setMax] = useState(props.max ? props.max : 200);
+	const [min, setMin] = useState(props.min ? props.min : 70);
+	const [max, setMax] = useState(props.max ? props.max : 180);
 	const [actualPosition, setActualPosition] = useState(
 		props.actualPosition ? props.actualPosition : 0
 	);
@@ -38,7 +38,7 @@ const IndicatorBar = (props) => {
 				"%";
 
 			indicator.current.style.left = finalPosPercentage;
-			indicator.current.style.color = "green";
+			indicator.current.style.color = "#1cc88a";
 		} else if (actualPosition > max) {
 			// Position is in the right red part
 
@@ -62,9 +62,12 @@ const IndicatorBar = (props) => {
 					).toFixed(2) + "%";
 			}
 			indicator.current.style.left = finalPosPercentage;
-			indicator.current.style.color = "red";
+			indicator.current.style.color = "#e74a3b";
 		} else if (actualPosition < min) {
 			// Position is in the left red part
+			console.log(typeof actualPosition);
+			console.log(typeof min);
+			console.log(actualPosition < min);
 			let minlim = min - dim1 / 3;
 			console.log("minlim: ", minlim);
 			let finalPosPercentage = "0.0";
@@ -84,7 +87,7 @@ const IndicatorBar = (props) => {
 					).toFixed(2) + "%";
 			}
 			indicator.current.style.left = finalPosPercentage;
-			indicator.current.style.color = "red";
+			indicator.current.style.color = "#e74a3b";
 		}
 	}, [actualPosition]);
 
@@ -95,12 +98,12 @@ const IndicatorBar = (props) => {
 					{actualPosition}
 				</div>
 				<div className="indicator_container" ref={container}>
-					<div className="indicator_background"></div>
+					<div className="indicator_background bg-danger"></div>
 					<div
 						className="indicator_separator"
 						style={{ left: "20%" }}
 					></div>
-					<div className="indicator_front"></div>
+					<div className="indicator_front bg-success"></div>
 					<div
 						className="indicator_separator"
 						style={{ left: "80%" }}
