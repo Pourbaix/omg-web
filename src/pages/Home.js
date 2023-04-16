@@ -1,6 +1,5 @@
 import React, { Component, useEffect, useRef, useState } from "react";
 import DefaultHomeChart from "../components/Charts/Line/HomeChart";
-import DefaultHomeChartTest from "../components/Charts/Line/HomeChartTest";
 import DefaultChartConfigModal from "../components/Modals/DefaultChartConfigModal?js";
 
 /**
@@ -78,7 +77,7 @@ const Home = () => {
 				>
 					<div className="d-flex" style={{ width: "75%" }}>
 						{/* <DefaultHomeChart reloadProps={reloadSeed} /> */}
-						<DefaultHomeChartTest
+						<DefaultHomeChart
 							reloadProps={reloadSeed}
 							setDates={setDates}
 						/>

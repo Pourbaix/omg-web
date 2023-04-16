@@ -1,5 +1,5 @@
 import {
-	Chart,
+	Chart as ChartJS,
 	TimeScale,
 	LinearScale,
 	BarController,
@@ -11,22 +11,46 @@ import {
 	Legend,
 	Tooltip,
 	Title,
+	Filler,
 } from "chart.js";
 import { useRef, useEffect, useState } from "react";
-import { Line, Bar } from "react-chartjs-2";
+import { Line, Bar, Chart } from "react-chartjs-2";
 import "chartjs-adapter-date-fns";
-import { getLastXhData } from "../../../services/omgServer";
+import { getLastXhData, getTagsInRange } from "../../../services/omgServer";
+import { useCreateDataStructureHomeChart } from "../../../hooks/useCreateDataStructure";
+import Meal from "../../../assets/meal.svg";
 
 const DefaultHomeChart = (props) => {
-	const [dataSet, setDataSet] = useState([]);
-	const [labels, setLabels] = useState([]);
-	// const [dataType, setDataType] = useState([]);
+	const [globalData, setGlobalData] = useState([]);
+	const [tagsData, setTagsData] = useState([]);
+	const [startDate, setStartDate] = useState("");
+	const [endDate, setEndDate] = useState("");
+	const [barWidth, setBarWidth] = useState(4);
 
-	const lableTitle = useRef("Glucose Level");
-	const pointsRadius = useRef(0);
-	const title = useRef("Glucose level for last 24h");
+	const [maxGlucoseValue, setMaxGlucoseValue] = useState(400);
 
-	Chart.register([
+	const [dataState, setDataState] = useState({
+		glucose: true,
+		meal: true,
+		basal: true,
+		correction: true,
+	});
+
+	const [tagsDisplay, setTagsDisplay] = useState(
+		JSON.parse(window.localStorage.getItem("defaultChartSettings"))[
+			"displayTags"
+		] !== "undefined"
+			? JSON.parse(window.localStorage.getItem("defaultChartSettings"))[
+					"displayTags"
+			  ]
+			: false
+	);
+
+	const chartRef = useRef(null);
+
+	const title = useRef("Chart for last 24h data");
+
+	ChartJS.register([
 		TimeScale,
 		LinearScale,
 		LineController,
@@ -38,46 +62,380 @@ const DefaultHomeChart = (props) => {
 		Legend,
 		Tooltip,
 		Title,
+		Filler,
 	]);
 
-	const data = {
-		labels: labels,
+	const needsToBeDisplayed = (name) => {
+		let translator = {
+			Glucose: "glucose",
+			"Basal Insulin": "basal",
+			"Meal Bolus": "meal",
+			"Correction Bolus": "correction",
+		};
+		if (Object.keys(translator).includes(name)) {
+			let equivalence = translator[name];
+			return dataState[equivalence];
+		} else {
+			return false;
+		}
+	};
+
+	const processBarWidth = () => {
+		let currentMsDisplayed =
+			new Date(endDate).getTime() - new Date(startDate).getTime();
+		// console.log(currentMsDisplayed / 3600000);
+		let currentHoursDisplayed = currentMsDisplayed / 3600000;
+		if (currentHoursDisplayed) {
+			setBarWidth(52 / currentHoursDisplayed);
+		}
+	};
+
+	let data = {
 		datasets: [
 			{
-				label: lableTitle.current,
-				data: dataSet,
+				type: "line",
+				label: "Glucose",
+				data: globalData,
 				borderColor: "#4e73df",
-				backgroundColor: "#ffff",
-				tension: 0,
+				backgroundColor: "#4e73df",
+				tension: 0.2,
 				borderWidth: 2,
-				pointRadius: pointsRadius.current,
+				pointRadius: 0.1,
+				// Remplir l'espace en dessous de la courbe
 				fill: false,
-				pointBackgroundColor: "white",
-				pointBorderColor: "lightblue",
-				pointHoverRadius: 8,
+				pointBackgroundColor: "#4e73df",
+				pointBorderColor: "#4e73df",
+				pointHoverRadius: !dataState["meal"]
+					? 8
+					: globalData.map((x) => {
+							return x.data["pointHoverRadius"];
+					  }),
 				pointHoverBackgroundColor: "#4e73df",
 				pointHoverBorderColor: "rgba(255, 255, 255, 0.4)",
 				pointHoverBorderWidth: 3,
 				pointHitRadius: 5,
-				pointBorderWidth: 2,
+				pointBorderWidth: 0,
+				pointStyle: !dataState["meal"]
+					? "circle"
+					: globalData.map((x) => {
+							return x.data["pointStyle"];
+					  }),
 				spanGaps: false,
+				yAxisID: "y",
+				parsing: {
+					xAxisKey: "datetime",
+					yAxisKey: "data.glucose",
+				},
+				hidden: !dataState["glucose"],
+				order: 2,
+			},
+			{
+				type: "bar",
+				label: "Basal Insulin",
+				data: globalData,
+				borderColor: "#df4e83",
+				backgroundColor: "#df4e83",
+				fill: true,
+				barThickness: barWidth,
+				barPercentage: 1,
+				borderWidth: 1,
+				categoryPercentage: 1,
+				tension: 0,
+				borderWidth: 1,
+				spanGaps: false,
+				yAxisID: "basal",
+				parsing: {
+					xAxisKey: "datetime",
+					yAxisKey: "data.basal",
+				},
+				hidden: !dataState["basal"],
+			},
+			{
+				type: "line",
+				label: "Meal Bolus",
+				data: globalData,
+				borderColor: "#df4e83",
+				backgroundColor: "#ffff",
+				tension: 0,
+				borderWidth: 2,
+				pointRadius: 0,
+				spanGaps: false,
+				yAxisID: "y",
+				parsing: {
+					xAxisKey: "datetime",
+					yAxisKey: "data.meal",
+				},
+				hidden: !dataState["meal"],
+			},
+			{
+				type: "bar",
+				label: "Correction Bolus",
+				data: globalData,
+				borderColor: "#ba03fc",
+				backgroundColor: "#ba03fc",
+				fill: true,
+				barThickness: barWidth,
+				barPercentage: 1,
+				borderWidth: 1,
+				categoryPercentage: 1,
+				tension: 0,
+				borderWidth: 1,
+				spanGaps: false,
+				yAxisID: "correction",
+				parsing: {
+					xAxisKey: "datetime",
+					yAxisKey: "data.correction",
+				},
+				hidden: !dataState["correction"],
 			},
 		],
 	};
 
+	// Plugin to increase padding after legend
+	const legendMargin = {
+		id: "legendMargin",
+		beforeInit(chart, legend, options) {
+			const fitValue = chart.legend.fit;
+
+			chart.legend.fit = function fit() {
+				fitValue.bind(chart.legend)();
+				return (this.height += 20);
+			};
+		},
+	};
+
+	// Plugin to display tags
+	const tagsLabels = {
+		id: "tagsLabels",
+		afterDatasetsDraw(chart, args, plugins) {
+			// console.log(chart, args, plugins);
+			const {
+				ctx,
+				data,
+				chartArea: { top, bottom, left, right, width, height },
+				scales: { x, y },
+			} = chart;
+			console.log(ctx);
+			ctx.save();
+
+			ctx.beginPath();
+			ctx.moveTo(200, 200);
+			ctx.lineTo(210, 208);
+			ctx.lineTo(245, 208);
+			ctx.lineTo(245, 192);
+			ctx.lineTo(210, 192);
+			ctx.lineTo(200, 200);
+			ctx.fillStyle = "rgba(255, 255, 255, 0.5)";
+			ctx.strokeStyle = "rgba(0, 0, 0, 0.8)";
+			// ctx.roundRect(200, top + height / 2, 100, 30, 5);
+			// ctx.rect(400, top + height / 2, 30, 20);
+			ctx.stroke();
+			ctx.fill();
+		},
+	};
+
+	const tagsLabelsMarkers = {
+		id: "tagsLabelsMarkers",
+		beforeDatasetsDraw(chart, args, plugins) {
+			const {
+				ctx,
+				chartArea: { top, bottom, height },
+				scales: { x },
+			} = chart;
+			console.log(tagsDisplay);
+			if (plugins.data && tagsDisplay) {
+				plugins.data.forEach((tag) => {
+					ctx.save();
+					ctx.beginPath();
+					ctx.strokeStyle = "#1cc88a";
+					ctx.lineWidth = 15;
+					ctx.moveTo(
+						x.getPixelForValue(
+							new Date(tag.startDatetime).getTime()
+						),
+						top
+					);
+					ctx.lineTo(
+						x.getPixelForValue(
+							new Date(tag.startDatetime).getTime()
+						),
+						bottom
+					);
+					ctx.stroke();
+
+					const angle = Math.PI / 180;
+					ctx.translate(
+						x.getPixelForValue(
+							new Date(tag.startDatetime).getTime()
+						),
+						height / 2 + top
+					);
+					ctx.rotate(90 * angle);
+					ctx.font = "bold 12px sans-serif";
+					ctx.textAlign = "center";
+					ctx.fillStyle = "white";
+					ctx.fillText(tag.name, 0, 0);
+
+					ctx.restore();
+				});
+			}
+		},
+	};
+
 	const options = {
+		layout: {
+			// padding: 25,
+		},
 		scales: {
 			x: {
 				type: "time",
+				offset: true,
+				grid: {
+					offset: false,
+				},
+				time: {
+					displayFormats: {
+						hour: "HH:mm",
+						unit: "hour",
+					},
+				},
+				ticks: {
+					major: {
+						enabled: true,
+					},
+					font: (context) => {
+						const boldedTicks =
+							context.tick &&
+							new Date(context.tick.value)
+								.toLocaleTimeString()
+								.slice(0, -3) === "00:00"
+								? "bold"
+								: "";
+
+						const fontSize =
+							context.tick &&
+							new Date(context.tick.value)
+								.toLocaleTimeString()
+								.slice(0, -3) === "00:00"
+								? "14px"
+								: "12px";
+
+						return {
+							weight: boldedTicks,
+							size: fontSize,
+						};
+					},
+					color: (context) => {
+						// console.log(context);
+						const color =
+							context.tick &&
+							new Date(context.tick.value)
+								.toLocaleTimeString()
+								.slice(0, -3) === "00:00"
+								? "#4e73df"
+								: "#000";
+						return color;
+					},
+					callback: (label, index, labels) => {
+						// console.log(label, index, labels[index]);
+						if (
+							labels[index].major &&
+							new Date(label)
+								.toLocaleTimeString()
+								.slice(0, -3) === "00:00"
+						) {
+							return new Date(label).toDateString().slice(0, -5);
+						} else {
+							return new Date(label)
+								.toLocaleTimeString()
+								.slice(0, -3);
+						}
+					},
+				},
 			},
 			y: {
 				beginAtZero: true,
+				type: "linear",
+				position: "left",
+				max: maxGlucoseValue,
+				title: {
+					display: true,
+					text: "Glucose data (mg/dl)",
+					fullSize: true,
+					color: "#4e73df",
+					font: {
+						size: "14px",
+						weight: "bold",
+					},
+				},
+				ticks: {
+					color: "#4e73df",
+				},
+			},
+			correction: {
+				beginAtZero: true,
+				type: "linear",
+				position: "right",
+				max: 8,
+				display: dataState["correction"],
+				reverse: true,
+				ticks: {
+					color: "#ba03fc",
+					callback: (label, index, labels) => {
+						// console.log(label, index, labels[index]);
+						return label > 7 ? "" : label;
+					},
+				},
+				title: {
+					display: true,
+					text: "Correction Bolus",
+					color: "#ba03fc",
+					font: {
+						size: "12vw",
+						weight: "bold",
+					},
+					padding: {
+						left: 150,
+					},
+				},
+				grid: {
+					display: false,
+				},
+				stack: "rightSide",
+			},
+			basal: {
+				beginAtZero: true,
+				type: "linear",
+				position: "right",
+				max: 0.6,
+				display: dataState["basal"],
+				reverse: false,
+				ticks: {
+					color: "#df4e83",
+					callback: (label, index, labels) => {
+						// console.log(label, index, labels[index]);
+						return label > 0.5 ? "" : label;
+					},
+				},
+				title: {
+					display: true,
+					text: "Basal Insulin",
+					color: "#df4e83",
+					font: {
+						size: "12vw",
+						weight: "bold",
+					},
+				},
+				grid: {
+					display: false,
+				},
+				stack: "rightSide",
 			},
 		},
 		responsive: true,
 		plugins: {
 			title: {
-				display: true,
+				display: false,
 				text: title.current,
 				fullSize: true,
 				font: {
@@ -88,17 +446,96 @@ const DefaultHomeChart = (props) => {
 			legend: {
 				display: true,
 				position: "top",
-				text: "Test",
+				labels: {
+					usePointStyle: true,
+					padding: 25,
+					font: {
+						family: '"Gill-sans", sans-serif',
+						weight: "500",
+						size: "12px",
+					},
+					generateLabels: (chart) => {
+						// console.log("-----------CHART:-------------");
+						// console.log(chart);
+						let mealImage = new Image(22, 22);
+						mealImage.src = Meal;
+						let pointStyleArray = ["cirle", "circle", mealImage];
+						return chart.config["_config"].data.datasets.map(
+							(dataset, index) => ({
+								text: dataset.label,
+								hidden: !needsToBeDisplayed(dataset.label),
+								fillStyle: dataset.backgroundColor,
+								fontColor: "#000",
+								strokeStyle: dataset.borderColor,
+								pointStyle: pointStyleArray[index],
+							})
+						);
+					},
+				},
+				onClick: (click, legendItem, legend) => {
+					// console.log(click);
+					// console.log(legendItem);
+					// console.log(legend);
+					if (needsToBeDisplayed(legendItem.text)) {
+						const datasets = legend.legendItems.map(
+							(dataset, index) => {
+								return dataset.text;
+							}
+						);
+
+						const index = datasets.indexOf(legendItem.text);
+						// console.log(index);
+						if (legend.chart.isDatasetVisible(index) === true) {
+							if (index == 2) {
+								let targetDataset =
+									chartRef.current["_metasets"][0][
+										"_dataset"
+									];
+								targetDataset.pointStyle = "circle";
+								targetDataset.pointHoverRadius = "8";
+							}
+							chartRef.current.hide(index);
+							chartRef.current["legend"].legendItems[
+								index
+							].fontColor = "#bfbfbf";
+							// console.log(
+							// 	chartRef.current["legend"].legendItems[index]
+							// 		.fontColor
+							// );
+							chartRef.current.legend.update();
+							chartRef.current.update();
+							// console.log(chartRef.current);
+						} else {
+							if (index == 2) {
+								let targetDataset =
+									chartRef.current["_metasets"][0][
+										"_dataset"
+									];
+								targetDataset.pointStyle = globalData.map(
+									(x) => {
+										return x.data["pointStyle"];
+									}
+								);
+								targetDataset.pointHoverRadius = globalData.map(
+									(x) => {
+										return x.data["pointHoverRadius"];
+									}
+								);
+								chartRef.current.update();
+							}
+							chartRef.current.show(index);
+						}
+					}
+				},
 			},
 			tooltip: {
 				backgroundColor: "rgba(255,255,255, 0.9)",
-				bodyColor: "#858796",
 				titleMarginBottom: 10,
 				titleColor: "#000",
 				titleFontSize: 5,
 				titleAlign: "center",
 				bodyAlign: "center",
-				bodyColor: "#4e73df",
+				bodyColor: "#000",
 				bodyFont: {
 					size: 12,
 					family: "trebuchet",
@@ -109,7 +546,7 @@ const DefaultHomeChart = (props) => {
 				xPadding: 15,
 				yPadding: 15,
 				displayColors: false,
-				intersect: false,
+				intersect: true,
 				mode: "index",
 				caretPadding: 10,
 				padding: 10,
@@ -122,113 +559,123 @@ const DefaultHomeChart = (props) => {
 							day: "numeric",
 							hour: "2-digit",
 							minute: "2-digit",
-							hour12: true,
+							hour12: false,
 						});
-						// console.log(formatedDate);
 						return formatedDate;
 					},
+					label: (context) => {
+						if (context.formattedValue == "0") {
+							return "";
+						}
+						return undefined;
+					},
+					labelTextColor: (context) => {
+						if (context.dataset.label == "Glucose") {
+							return "#4e73df";
+						} else if (
+							context.dataset.label == "Correction Bolus"
+						) {
+							return "#ba03fc";
+						} else {
+							return "#df4e8a";
+						}
+					},
 				},
+			},
+			tagsLabelsMarkers: {
+				datetime: 1,
+				data: tagsData,
 			},
 		},
 	};
 
+	const findMaxValue = (data) => {
+		let maxValue = 0;
+		if (data.length) {
+			data.forEach((element) => {
+				if (element.data.glucose > maxValue) {
+					maxValue = element.data.glucose;
+				}
+			});
+		}
+		// console.log(maxValue);
+		return maxValue === 0 ? 400 : maxValue + 50;
+	};
+
 	useEffect(() => {
-		let period = 24;
-		let dataType = "glucose";
+		let period = 48;
+		let defaultConfig = {
+			glucose: true,
+			basal: true,
+			meal: true,
+			correction: true,
+		};
 		let config = JSON.parse(
 			window.localStorage.getItem("defaultChartSettings")
 		);
 		if (config) {
-			period = parseInt(config["period"]);
-			dataType = config["type"];
-		} else {
-			// Si il n'y a pas de configuration détectée, on affiche le graph de glycémie par défaut
-			dataType = "glucose";
-		}
-		const getData = async () => {
-			console.log(period);
-			let response = await getLastXhData(parseInt(period));
-			console.log(response);
-			let dataToDisplay = [];
-			if (dataType == "glucose") {
-				setDataSet(response["GlucoseData"].map((x) => x.glucose));
-				setLabels(response["GlucoseData"].map((x) => x.datetime));
-				title.current = "Glucose level for last " + period + "H";
-				lableTitle.current = "Glucose Level";
-				pointsRadius.current = 0;
-			} else if (dataType == "correction") {
-				dataToDisplay = response["InsulinData"]
-					.filter((x) => {
-						return x.insulinType == "CORRECTION";
-					})
-					.sort((a, b) => {
-						return new Date(a.datetime) - new Date(b.datetime);
-					});
-				setDataSet(
-					dataToDisplay.map((x) => {
-						return JSON.parse(x.insulinDescr)[
-							"deliveredFastAmount"
-						];
-					})
-				);
-				setLabels(dataToDisplay.map((x) => x.datetime));
-				lableTitle.current = "Correction Bolus";
-				title.current = "Correction bolus for last " + period + "H";
-			} else if (dataType == "meal") {
-				dataToDisplay = response["InsulinData"]
-					.filter((x) => {
-						return x.insulinType == "MEAL";
-					})
-					.sort((a, b) => {
-						return new Date(a.datetime) - new Date(b.datetime);
-					});
-				setDataSet(dataToDisplay.map((x) => x.carbInput));
-				setLabels(dataToDisplay.map((x) => x.datetime));
-				pointsRadius.current = 5;
-				lableTitle.current = "Meal Bolus";
-				title.current = "Meal bolus for last " + period + "H";
-			} else if (dataType == "basal") {
-				dataToDisplay = response["InsulinData"]
-					.filter((x) => {
-						return x.insulinType == "AUTO_BASAL_DELIVERY";
-					})
-					.sort((a, b) => {
-						return new Date(a.datetime) - new Date(b.datetime);
-					});
-				setDataSet(
-					dataToDisplay.map((x) => {
-						return JSON.parse(x.insulinDescr)["bolusAmount"];
-					})
-				);
-				setLabels(dataToDisplay.map((x) => x.datetime));
-				pointsRadius.current = 2;
-				lableTitle.current = "Basal Bolus";
-				title.current = "Basal level for last " + period + "H";
+			if (config["period"]) {
+				period = parseInt(config["period"]);
 			}
+			if (config["types"]) {
+				defaultConfig = config["types"];
+			}
+		}
+		setDataState(defaultConfig);
+		const getData = async () => {
+			title.current = "Chart for last " + period + "h data:";
+			let response = await getLastXhData(parseInt(period));
+			let dataStructure = useCreateDataStructureHomeChart(response);
+			setMaxGlucoseValue(findMaxValue(dataStructure));
+			setGlobalData(dataStructure);
 		};
 		getData();
 	}, [props.reloadProps]);
 
+	useEffect(() => {
+		// console.log(globalData);
+		const postProcess = async () => {
+			let dates = {
+				first: "",
+				last: "",
+			};
+			if (globalData[0]) {
+				if (globalData[0].datetime) {
+					dates["first"] = globalData[0].datetime;
+				}
+				if (globalData.slice(-1)) {
+					dates["last"] = globalData.slice(-1)[0].datetime;
+				}
+				props.setDates(dates);
+				setStartDate(dates["first"]);
+				setEndDate(dates["last"]);
+				processBarWidth();
+				let tagsRes = await getTagsInRange(
+					dates["first"],
+					dates["last"]
+				);
+				setTagsData(tagsRes);
+			}
+		};
+		postProcess();
+	}, [globalData, props.reloadProps]);
+
 	return (
 		<div
-			style={{ width: "70%", overflow: "visible" }}
-			className="position-relative"
+			className="w-100 overflow-visible"
+			// style={{ maxWidth: "80%" }}
 		>
-			<Line options={options} data={data} />
-			{dataSet[0] ? (
-				""
-			) : (
-				<div className="d-flex flex-column justify-content-center align-items-center w-100 h-100 position-absolute top-0 start-0">
-					<h3 className="p-2 border border-danger bg-light fs-5 fw-bolder text-danger">
-						No data to display
-					</h3>
-					<p className="text-dark text-center fw-bold ">
-						No datas were detected, sometimes auto-import takes some
-						time to retrieve datas. Reloading the page after a few
-						seconds might do the trick.
-					</p>
-				</div>
-			)}
+			<Chart
+				type="line"
+				ref={chartRef}
+				options={options}
+				data={data}
+				plugins={[
+					legendMargin,
+					// tagsLabels,
+					tagsLabelsMarkers,
+				]}
+			/>
 		</div>
 	);
 };
