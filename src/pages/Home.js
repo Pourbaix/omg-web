@@ -17,10 +17,8 @@ const Home = () => {
 		Basal: true,
 	});
 	const [period, setPeriod] = useState(24);
-	const [startDatetime, setStartDatetime] = useState(
-		new Date().toUTCString()
-	);
-	const [endDatetime, setEndDatetime] = useState(new Date().toUTCString());
+	const [startDatetime, setStartDatetime] = useState("");
+	const [endDatetime, setEndDatetime] = useState("");
 
 	const reloadChart = () => {
 		// console.log("Reload");
@@ -74,8 +72,11 @@ const Home = () => {
 				<h1 className="h1 mb-2 text-gray-800">
 					Welcome to OMG Web application !
 				</h1>
-				<div className="d-flex flex-row w-100 justify-content-center align-items-center">
-					<div className="d-flex" style={{ width: "70%" }}>
+				<div
+					className="d-flex flex-row w-100 justify-content-center align-items-center"
+					style={{ gap: "15px" }}
+				>
+					<div className="d-flex" style={{ width: "75%" }}>
 						{/* <DefaultHomeChart reloadProps={reloadSeed} /> */}
 						<DefaultHomeChartTest
 							reloadProps={reloadSeed}
@@ -90,12 +91,18 @@ const Home = () => {
 						<hr className="sidebar-divider my-0" />
 						<div className="mt-1 mb-1">{generateConfigInfo()}</div>
 						<hr className="sidebar-divider my-0" />
-						<div className="mt-1 mb-1">
-							<p className="mb-1">From: </p>
-							<p className="m-1 fw-bold">{startDatetime}</p>
-							<p className="mb-1"> To: </p>
-							<p className="m-1 fw-bold">{endDatetime}</p>
-						</div>
+						{startDatetime && endDatetime ? (
+							<div className="mt-1 mb-1">
+								<p className="mb-1">From: </p>
+								<p className="m-1 fw-bold">{startDatetime}</p>
+								<p className="mb-1"> To: </p>
+								<p className="m-1 fw-bold">{endDatetime}</p>
+							</div>
+						) : (
+							<p className="text-danger text-center fw-bold mt-4 mb-4">
+								No data to display
+							</p>
+						)}
 						<hr className="sidebar-divider my-0" />
 						<button
 							className="btn btn-primary mt-2 w-auto"

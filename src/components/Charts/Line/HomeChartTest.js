@@ -16,17 +16,18 @@ import {
 import { useRef, useEffect, useState } from "react";
 import { Line, Bar, Chart } from "react-chartjs-2";
 import "chartjs-adapter-date-fns";
-import { getLastXhData } from "../../../services/omgServer";
+import { getLastXhData, getTagsInRange } from "../../../services/omgServer";
 import { useCreateDataStructureHomeChart } from "../../../hooks/useCreateDataStructure";
 import Meal from "../../../assets/meal.svg";
 
 const DefaultHomeChart = (props) => {
 	const [globalData, setGlobalData] = useState([]);
+	const [tagsData, setTagsData] = useState([]);
 	const [startDate, setStartDate] = useState("");
 	const [endDate, setEndDate] = useState("");
 	const [barWidth, setBarWidth] = useState(4);
 
-	const chartRef = useRef(null);
+	const [maxGlucoseValue, setMaxGlucoseValue] = useState(400);
 
 	const [dataState, setDataState] = useState({
 		glucose: true,
@@ -35,8 +36,18 @@ const DefaultHomeChart = (props) => {
 		correction: true,
 	});
 
-	// const lableTitle = useRef("Glucose Level");
-	// const pointsRadius = useRef(0);
+	const [tagsDisplay, setTagsDisplay] = useState(
+		JSON.parse(window.localStorage.getItem("defaultChartSettings"))[
+			"displayTags"
+		] !== "undefined"
+			? JSON.parse(window.localStorage.getItem("defaultChartSettings"))[
+					"displayTags"
+			  ]
+			: false
+	);
+
+	const chartRef = useRef(null);
+
 	const title = useRef("Chart for last 24h data");
 
 	ChartJS.register([
@@ -72,7 +83,7 @@ const DefaultHomeChart = (props) => {
 	const processBarWidth = () => {
 		let currentMsDisplayed =
 			new Date(endDate).getTime() - new Date(startDate).getTime();
-		console.log(currentMsDisplayed / 3600000);
+		// console.log(currentMsDisplayed / 3600000);
 		let currentHoursDisplayed = currentMsDisplayed / 3600000;
 		if (currentHoursDisplayed) {
 			setBarWidth(52 / currentHoursDisplayed);
@@ -87,7 +98,7 @@ const DefaultHomeChart = (props) => {
 				data: globalData,
 				borderColor: "#4e73df",
 				backgroundColor: "#4e73df",
-				tension: 0,
+				tension: 0.2,
 				borderWidth: 2,
 				pointRadius: 0.1,
 				// Remplir l'espace en dessous de la courbe
@@ -156,26 +167,269 @@ const DefaultHomeChart = (props) => {
 				},
 				hidden: !dataState["meal"],
 			},
+			{
+				type: "bar",
+				label: "Correction Bolus",
+				data: globalData,
+				borderColor: "#ba03fc",
+				backgroundColor: "#ba03fc",
+				fill: true,
+				barThickness: barWidth,
+				barPercentage: 1,
+				borderWidth: 1,
+				categoryPercentage: 1,
+				tension: 0,
+				borderWidth: 1,
+				spanGaps: false,
+				yAxisID: "correction",
+				parsing: {
+					xAxisKey: "datetime",
+					yAxisKey: "data.correction",
+				},
+				hidden: !dataState["correction"],
+			},
 		],
 	};
 
+	// Plugin to increase padding after legend
+	const legendMargin = {
+		id: "legendMargin",
+		beforeInit(chart, legend, options) {
+			const fitValue = chart.legend.fit;
+
+			chart.legend.fit = function fit() {
+				fitValue.bind(chart.legend)();
+				return (this.height += 20);
+			};
+		},
+	};
+
+	// Plugin to display tags
+	const tagsLabels = {
+		id: "tagsLabels",
+		afterDatasetsDraw(chart, args, plugins) {
+			// console.log(chart, args, plugins);
+			const {
+				ctx,
+				data,
+				chartArea: { top, bottom, left, right, width, height },
+				scales: { x, y },
+			} = chart;
+			console.log(ctx);
+			ctx.save();
+
+			ctx.beginPath();
+			ctx.moveTo(200, 200);
+			ctx.lineTo(210, 208);
+			ctx.lineTo(245, 208);
+			ctx.lineTo(245, 192);
+			ctx.lineTo(210, 192);
+			ctx.lineTo(200, 200);
+			ctx.fillStyle = "rgba(255, 255, 255, 0.5)";
+			ctx.strokeStyle = "rgba(0, 0, 0, 0.8)";
+			// ctx.roundRect(200, top + height / 2, 100, 30, 5);
+			// ctx.rect(400, top + height / 2, 30, 20);
+			ctx.stroke();
+			ctx.fill();
+		},
+	};
+
+	const tagsLabelsMarkers = {
+		id: "tagsLabelsMarkers",
+		beforeDatasetsDraw(chart, args, plugins) {
+			const {
+				ctx,
+				chartArea: { top, bottom, height },
+				scales: { x },
+			} = chart;
+			console.log(tagsDisplay);
+			if (plugins.data && tagsDisplay) {
+				plugins.data.forEach((tag) => {
+					ctx.save();
+					ctx.beginPath();
+					ctx.strokeStyle = "#1cc88a";
+					ctx.lineWidth = 15;
+					ctx.moveTo(
+						x.getPixelForValue(
+							new Date(tag.startDatetime).getTime()
+						),
+						top
+					);
+					ctx.lineTo(
+						x.getPixelForValue(
+							new Date(tag.startDatetime).getTime()
+						),
+						bottom
+					);
+					ctx.stroke();
+
+					const angle = Math.PI / 180;
+					ctx.translate(
+						x.getPixelForValue(
+							new Date(tag.startDatetime).getTime()
+						),
+						height / 2 + top
+					);
+					ctx.rotate(90 * angle);
+					ctx.font = "bold 12px sans-serif";
+					ctx.textAlign = "center";
+					ctx.fillStyle = "white";
+					ctx.fillText(tag.name, 0, 0);
+
+					ctx.restore();
+				});
+			}
+		},
+	};
+
 	const options = {
+		layout: {
+			// padding: 25,
+		},
 		scales: {
 			x: {
 				type: "time",
+				offset: true,
+				grid: {
+					offset: false,
+				},
+				time: {
+					displayFormats: {
+						hour: "HH:mm",
+						unit: "hour",
+					},
+				},
+				ticks: {
+					major: {
+						enabled: true,
+					},
+					font: (context) => {
+						const boldedTicks =
+							context.tick &&
+							new Date(context.tick.value)
+								.toLocaleTimeString()
+								.slice(0, -3) === "00:00"
+								? "bold"
+								: "";
+
+						const fontSize =
+							context.tick &&
+							new Date(context.tick.value)
+								.toLocaleTimeString()
+								.slice(0, -3) === "00:00"
+								? "14px"
+								: "12px";
+
+						return {
+							weight: boldedTicks,
+							size: fontSize,
+						};
+					},
+					color: (context) => {
+						// console.log(context);
+						const color =
+							context.tick &&
+							new Date(context.tick.value)
+								.toLocaleTimeString()
+								.slice(0, -3) === "00:00"
+								? "#4e73df"
+								: "#000";
+						return color;
+					},
+					callback: (label, index, labels) => {
+						// console.log(label, index, labels[index]);
+						if (
+							labels[index].major &&
+							new Date(label)
+								.toLocaleTimeString()
+								.slice(0, -3) === "00:00"
+						) {
+							return new Date(label).toDateString().slice(0, -5);
+						} else {
+							return new Date(label)
+								.toLocaleTimeString()
+								.slice(0, -3);
+						}
+					},
+				},
 			},
 			y: {
 				beginAtZero: true,
 				type: "linear",
 				position: "left",
+				max: maxGlucoseValue,
+				title: {
+					display: true,
+					text: "Glucose data (mg/dl)",
+					fullSize: true,
+					color: "#4e73df",
+					font: {
+						size: "14px",
+						weight: "bold",
+					},
+				},
+				ticks: {
+					color: "#4e73df",
+				},
+			},
+			correction: {
+				beginAtZero: true,
+				type: "linear",
+				position: "right",
+				max: 8,
+				display: dataState["correction"],
+				reverse: true,
+				ticks: {
+					color: "#ba03fc",
+					callback: (label, index, labels) => {
+						// console.log(label, index, labels[index]);
+						return label > 7 ? "" : label;
+					},
+				},
+				title: {
+					display: true,
+					text: "Correction Bolus",
+					color: "#ba03fc",
+					font: {
+						size: "12vw",
+						weight: "bold",
+					},
+					padding: {
+						left: 150,
+					},
+				},
+				grid: {
+					display: false,
+				},
+				stack: "rightSide",
 			},
 			basal: {
 				beginAtZero: true,
 				type: "linear",
 				position: "right",
-				max: 0.3,
-				display: false,
+				max: 0.6,
+				display: dataState["basal"],
 				reverse: false,
+				ticks: {
+					color: "#df4e83",
+					callback: (label, index, labels) => {
+						// console.log(label, index, labels[index]);
+						return label > 0.5 ? "" : label;
+					},
+				},
+				title: {
+					display: true,
+					text: "Basal Insulin",
+					color: "#df4e83",
+					font: {
+						size: "12vw",
+						weight: "bold",
+					},
+				},
+				grid: {
+					display: false,
+				},
+				stack: "rightSide",
 			},
 		},
 		responsive: true,
@@ -194,6 +448,7 @@ const DefaultHomeChart = (props) => {
 				position: "top",
 				labels: {
 					usePointStyle: true,
+					padding: 25,
 					font: {
 						family: '"Gill-sans", sans-serif',
 						weight: "500",
@@ -317,13 +572,34 @@ const DefaultHomeChart = (props) => {
 					labelTextColor: (context) => {
 						if (context.dataset.label == "Glucose") {
 							return "#4e73df";
+						} else if (
+							context.dataset.label == "Correction Bolus"
+						) {
+							return "#ba03fc";
 						} else {
 							return "#df4e8a";
 						}
 					},
 				},
 			},
+			tagsLabelsMarkers: {
+				datetime: 1,
+				data: tagsData,
+			},
 		},
+	};
+
+	const findMaxValue = (data) => {
+		let maxValue = 0;
+		if (data.length) {
+			data.forEach((element) => {
+				if (element.data.glucose > maxValue) {
+					maxValue = element.data.glucose;
+				}
+			});
+		}
+		// console.log(maxValue);
+		return maxValue === 0 ? 400 : maxValue + 50;
 	};
 
 	useEffect(() => {
@@ -349,37 +625,57 @@ const DefaultHomeChart = (props) => {
 		const getData = async () => {
 			title.current = "Chart for last " + period + "h data:";
 			let response = await getLastXhData(parseInt(period));
-			setGlobalData(useCreateDataStructureHomeChart(response));
+			let dataStructure = useCreateDataStructureHomeChart(response);
+			setMaxGlucoseValue(findMaxValue(dataStructure));
+			setGlobalData(dataStructure);
 		};
 		getData();
 	}, [props.reloadProps]);
 
 	useEffect(() => {
 		// console.log(globalData);
-		let dates = {
-			first: "",
-			last: "",
+		const postProcess = async () => {
+			let dates = {
+				first: "",
+				last: "",
+			};
+			if (globalData[0]) {
+				if (globalData[0].datetime) {
+					dates["first"] = globalData[0].datetime;
+				}
+				if (globalData.slice(-1)) {
+					dates["last"] = globalData.slice(-1)[0].datetime;
+				}
+				props.setDates(dates);
+				setStartDate(dates["first"]);
+				setEndDate(dates["last"]);
+				processBarWidth();
+				let tagsRes = await getTagsInRange(
+					dates["first"],
+					dates["last"]
+				);
+				setTagsData(tagsRes);
+			}
 		};
-		if (globalData[0]) {
-			if (globalData[0].datetime) {
-				dates["first"] = globalData[0].datetime;
-			}
-			if (globalData.slice(-1)) {
-				dates["last"] = globalData.slice(-1)[0].datetime;
-			}
-			props.setDates(dates);
-			setStartDate(dates["first"]);
-			setEndDate(dates["last"]);
-			processBarWidth();
-		}
+		postProcess();
 	}, [globalData, props.reloadProps]);
 
 	return (
 		<div
-			className="position-relative w-100 overflow-visible"
-			style={{ maxWidth: "800px" }}
+			className="w-100 overflow-visible"
+			// style={{ maxWidth: "80%" }}
 		>
-			<Chart type="line" ref={chartRef} options={options} data={data} />
+			<Chart
+				type="line"
+				ref={chartRef}
+				options={options}
+				data={data}
+				plugins={[
+					legendMargin,
+					// tagsLabels,
+					tagsLabelsMarkers,
+				]}
+			/>
 		</div>
 	);
 };

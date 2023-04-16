@@ -5,7 +5,7 @@ export const useCreateDataStructureHomeChart = (obj) => {
 	let insulinData = obj["InsulinData"];
 	let finalArray = [];
 	const mealImage = new Image(22, 22);
-	// mealImage.src = "https://www.chartjs.org/docs/next/favicon.ico";
+
 	mealImage.src = Meal;
 
 	glucoseData.forEach((element) => {

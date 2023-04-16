@@ -13,6 +13,7 @@ const DefaultChartConfigModal = (props) => {
 	const [timePeriod, setTimePeriod] = useState(0);
 	const [buttonState, setButtonState] = useState(0);
 	const [error, setError] = useState("");
+	const [displayTags, setDisplayTags] = useState(false);
 
 	// Refs for the data types
 	const glucoseCheckbox = useRef(null);
@@ -26,6 +27,9 @@ const DefaultChartConfigModal = (props) => {
 	const thirdRadio = useRef(null);
 	const extraRadio = useRef(null);
 	const otherPeriod = useRef(null);
+
+	// Refs for the tags
+	const displayTagsCheckbox = useRef(false);
 
 	const errorArea = useRef("");
 
@@ -59,10 +63,12 @@ const DefaultChartConfigModal = (props) => {
 		let newsettings = JSON.stringify({
 			types: type,
 			period: selectedPeriod,
+			displayTags: displayTags,
 		});
 		window.localStorage.setItem("defaultChartSettings", newsettings);
 		setButtonState(1);
 		props.reloadChart();
+		window.location.reload();
 		return 1;
 	};
 
@@ -101,6 +107,9 @@ const DefaultChartConfigModal = (props) => {
 					);
 					otherPeriod.current.disabled = false;
 					setTimePeriod(loadedConfig["period"]);
+				}
+				if (loadedConfig["displayTags"] !== "undefined") {
+					setDisplayTags(loadedConfig["displayTags"]);
 				}
 			}
 		}
@@ -261,6 +270,28 @@ const DefaultChartConfigModal = (props) => {
 									}
 								}}
 							/>
+						</div>
+						<h5>Configure tags: </h5>
+						<div
+							style={{
+								display: "flex",
+								alignItems: "center",
+								marginBottom: "5px",
+							}}
+						>
+							<input
+								type="checkbox"
+								checked={displayTags}
+								name="showTags"
+								id="showTags"
+								value="glucose"
+								className="form-check-input"
+								ref={displayTagsCheckbox}
+								onChange={() => {
+									setDisplayTags(!displayTags);
+								}}
+							/>
+							<label htmlFor="showTags">Display Tags?</label>
 						</div>
 						{buttonState ? (
 							<button
