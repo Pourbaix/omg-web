@@ -42,7 +42,7 @@ const LoadingPage = () => {
 			let config = await checkAutoImportConfiguration();
 			if (config) {
 				console.log(config);
-				setMessage("Importing last 24 hours datas...");
+				setMessage("Importing last 24 hours data...");
 				importLastDataFromAPI();
 			} else {
 				setMessage("Welcome to OMG !");
