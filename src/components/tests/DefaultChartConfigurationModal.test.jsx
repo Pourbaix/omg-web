@@ -11,6 +11,7 @@ describe("Testing the modal component", () => {
 		Object.defineProperty(window, "localStorage", {
 			value: {
 				setItem: jest.fn(() => null),
+				getItem: jest.fn(() => null),
 			},
 			writable: true,
 		});
@@ -101,11 +102,11 @@ describe("Testing the modal component", () => {
 		expect(reloadChartState).toBeTruthy();
 		expect(window.localStorage.setItem).toHaveBeenCalledWith(
 			"defaultChartSettings",
-			'{"type":"glucose","period":"24"}'
+			'{"types":{"glucose":true,"basal":false,"meal":false,"correction":false},"period":"24"}'
 		);
 	});
 
-	test("test that errors are comming up when not selecting any radio button", async () => {
+	test("test that errors are comming up when not selecting any checkbox button", async () => {
 		let modalState = true;
 		let reloadChartState = false;
 		const reloadChart = () => {
@@ -130,14 +131,16 @@ describe("Testing the modal component", () => {
 		await userEvent.click(screen.getByRole("button"));
 
 		expect(
-			screen.getByText("Please select a type and a valid time period !")
+			screen.getByText(
+				"Please select at least one type and a valid time period !"
+			)
 		).toBeTruthy();
 
 		expect(window.localStorage.setItem).toHaveBeenCalledTimes(0);
 		expect(reloadChartState).toBeFalsy();
 	});
 
-	test("test that errors are comming up when not selecting an insulin type", async () => {
+	test("test that errors are comming up when not selecting a period", async () => {
 		let modalState = true;
 		let reloadChartState = false;
 		const reloadChart = () => {
@@ -159,12 +162,13 @@ describe("Testing the modal component", () => {
 			/>
 		);
 
-		await userEvent.click(screen.getByLabelText("Insulin data"));
-		await userEvent.click(screen.getByLabelText("24h"));
+		await userEvent.click(screen.getByLabelText("Basal Insulin"));
 		await userEvent.click(screen.getByRole("button"));
 
 		expect(
-			screen.getByText("Please select an insulin type !")
+			screen.getByText(
+				"Please select at least one type and a valid time period !"
+			)
 		).toBeTruthy();
 
 		expect(window.localStorage.setItem).toHaveBeenCalledTimes(0);
