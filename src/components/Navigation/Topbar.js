@@ -7,6 +7,10 @@ import store from "../../redux/store";
  * This is the topbar of the web application. Allows user to access the application and account settings
  */
 class Topbar extends Component {
+	constructor(props) {
+		super(props);
+	}
+
 	static propTypes = {
 		cookies: instanceOf(Cookies).isRequired,
 	};
@@ -20,7 +24,7 @@ class Topbar extends Component {
 	setTitle() {
 		let routesDict = {
 			"/": "Home",
-			"/index": "Home",
+			"/home": "Home",
 			"/dataManager": "Data Manager",
 			"/tagsManager": "Tags Manager",
 			"/tagactivation": "Tag Creation",
@@ -30,8 +34,9 @@ class Topbar extends Component {
 			"/chartsbytag": "Charts by tag",
 			"/pendingtags": "Pending Tags",
 		};
+		// console.log(window.location);
 		if (routesDict.hasOwnProperty(window.location.pathname)) {
-			console.log(routesDict.hasOwnProperty(window.location.pathname));
+			// console.log(routesDict.hasOwnProperty(window.location.pathname));
 			return (
 				<p id={"topbarTitle"} className={"navbar-brand mb-0"}>
 					{routesDict[window.location.pathname]}
