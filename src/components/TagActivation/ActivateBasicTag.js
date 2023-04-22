@@ -8,6 +8,9 @@ import {
 import TextField from "@mui/material/TextField";
 import { useRoundMinutesAndAddSummerTime } from "../../hooks/useRoundMinutesAndAddSummerTime";
 import { useToIsoString } from "../../hooks/useToIsoString";
+import autoComplete from "@tarekraafat/autocomplete.js";
+import { get } from "jquery";
+import "../../styles/scss/components/activateBasicTag/activateBasicTag.scss";
 
 /**
  * This class represents a card with 4 sections :
@@ -30,6 +33,7 @@ class ActivateBasicTag extends Component {
 		super(props);
 		this.state = {
 			recentTags: [],
+			allTags: [],
 			roundedDatetime: this.getDatePickerFormat(new Date(Date.now())),
 			chosenDatetime: this.getDatePickerBeforeRound(new Date(Date.now())),
 			chosenTag: "",
@@ -51,6 +55,53 @@ class ActivateBasicTag extends Component {
 				console.log(this.getDatePickerFormat(new Date(Date.now())));
 			} else {
 				console.log(res);
+			}
+		});
+		getAllTagsFromUserId().then((res) => {
+			if (res) {
+				console.log(res);
+				this.setState({ allTags: res });
+				const autoCompleteJS = new autoComplete({
+					selector: "#manualBasicTagInput",
+					placeHolder: "Enter a tag name",
+					data: { src: res },
+					resultItem: {
+						highlight: true,
+						tag: "p",
+						class: "search_item",
+					},
+					resultsList: {
+						class: "position-fixed bg-white border border-primary border-3 p-2 search_container ",
+						tabSelect: true,
+						element: (list, data) => {
+							console.log(list, data);
+							data.results.forEach((element) => {
+								console.log(element.match);
+							});
+						},
+					},
+					threshold: 1,
+					wrapper: true,
+					event: {
+						list: {
+							click: (event) => {
+								console.log(event);
+							},
+						},
+					},
+				});
+				// let containerId = document.getElementById("manualBasicTagInput")
+				// 	.attributes["aria-controls"].value;
+				// document
+				// 	.getElementById(containerId)
+				// 	.addEventListener("click", (event) => {
+				// 		console.log(event);
+				// 	});
+				// console.log(document.getElementById(containerId).childNodes);
+				// console.log(autoCompleteJS);
+				// document.getElement("search_item").addEventListener("click", (event) => {
+				// 	console.log(event);
+				// });;
 			}
 		});
 	}
@@ -221,13 +272,7 @@ class ActivateBasicTag extends Component {
 	 * This will show 8 more tags each time it is called.
 	 */
 	loadMoreSuggestion = () => {
-		getAllTagsFromUserId().then((res) => {
-			if (res) {
-				this.setState({ recentTags: res });
-			} else {
-				console.log(res);
-			}
-		});
+		this.setState({ recentTags: this.state.allTags });
 	};
 
 	/**
@@ -303,15 +348,19 @@ class ActivateBasicTag extends Component {
 	 */
 	manualTag() {
 		return (
-			<div className={"mt-3"}>
+			<div
+				className={"mt-3"}
+				style={{ clipPath: "inset(0, auto, auto, 0)" }}
+			>
 				<p className={"mb-2 text-uppercase"}>Manual</p>
 				<input
 					id={"manualBasicTagInput"}
 					className={
-						"form-control form-control-plaintext border ps-2 border-bottom-primary"
+						"form-control form-control-plaintext border ps-2 border-bottom-primary search_field"
 					}
 					placeholder={"Enter a tag"}
 					onChange={this.manualBasicTagInputChange}
+					style={{ width: "50vw" }}
 				/>
 			</div>
 		);
