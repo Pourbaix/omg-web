@@ -25,6 +25,26 @@ class DataManager extends Component {
 	selectedImportChange = (event) =>
 		this.setState({ selectedImport: event.target.value });
 
+	sortData = (data) => {
+		let final_data = [];
+		data.forEach((element) => {
+			let diff =
+				new Date(element.end).getTime() -
+				new Date(element.start).getTime();
+			if (diff > 86400000) {
+				final_data.push({
+					dates: element,
+					type: "urgent",
+				});
+			} else if (diff > 43200000) {
+				final_data.push({ dates: element, type: "warning" });
+			} else {
+				final_data.push({ dates: element, type: "normal" });
+			}
+		});
+		return final_data;
+	};
+
 	refresh = () => {
 		getDataDays().then((res) => {
 			res = res.map((date) => new Date(date));
@@ -40,8 +60,31 @@ class DataManager extends Component {
 		}
 
 		getImportNames().then((res) => this.setState({ importNames: res }));
+
 		checkMissingData().then((res) => {
-			this.setState({ missingDataList: res });
+			let sorted = this.sortData(res);
+			function sortByTypeUrgent(element) {
+				if (element.type == "urgent") {
+					return 1;
+				} else {
+					return -1;
+				}
+			}
+			function sortByTypeWarning(element) {
+				if (element.type == "urgent" || element.type == "warning") {
+					return 1;
+				} else {
+					return -1;
+				}
+			}
+
+			this.setState({
+				missingDataList: sorted
+					.sort(sortByTypeWarning)
+					.reverse()
+					.sort(sortByTypeUrgent)
+					.reverse(),
+			});
 		});
 	};
 
@@ -188,12 +231,16 @@ class DataManager extends Component {
 							Warning ! These operations are irreversible
 						</p>
 						<p className={"fw-bold"}>Revert an import</p>
-						<div className="d-flex align-items-center">
+						<div
+							className="d-flex align-items-start flex-column"
+							style={{ gap: "5px" }}
+						>
 							<select
 								id={"revertImportSelector"}
 								className={"form-control"}
 								onChange={this.selectedImportChange}
 								defaultValue={"none"}
+								style={{ maxWidth: "300px" }}
 							>
 								<option
 									id={"selectedOptionRevertImportSelector"}
@@ -204,7 +251,7 @@ class DataManager extends Component {
 							</select>
 							<button
 								id={"revertButton"}
-								className={"btn btn-outline-warning ms-3"}
+								className={"btn btn-outline-warning"}
 								onClick={this.revertClick}
 							>
 								Revert
@@ -243,16 +290,22 @@ class DataManager extends Component {
 					className="m-0"
 				>
 					<p>List of all period of time without any data:</p>
-					<div style={{ maxHeight: "60vh", overflowY: "auto" }}>
+					<div style={{ maxHeight: "45vh", overflowY: "auto" }}>
 						{this.state.missingDataList.map((e) => {
 							return (
 								<div
-									className="d-flex p-2 border rounded m-1"
+									className={
+										e.type == "urgent"
+											? "d-flex p-2 border border-danger border-2 rounded m-1"
+											: e.type == "warning"
+											? "d-flex p-2 border border-warning border-2 rounded m-1"
+											: "d-flex p-2 border border-2 rounded m-1"
+									}
 									style={{ gap: "5px" }}
-									key={e.start + e.end}
+									key={e.dates.start + e.dates.end}
 								>
 									<p className="mb-0 fst-italic text-center">
-										{new Date(e.start)
+										{new Date(e.dates.start)
 											.toLocaleString()
 											.slice(0, -3)}
 									</p>
@@ -260,13 +313,45 @@ class DataManager extends Component {
 										To
 									</p>
 									<p className="mb-0 fst-italic text-center">
-										{new Date(e.end)
+										{new Date(e.dates.end)
 											.toLocaleString()
 											.slice(0, -3)}
 									</p>
 								</div>
 							);
 						})}
+					</div>
+					<div className="mt-3">
+						<div className="d-flex align-items-center">
+							<div
+								className="border border-danger border-2 rounded"
+								style={{
+									width: "15px",
+									height: "15px",
+								}}
+							></div>{" "}
+							<p className="m-0 ms-2">More than one day</p>
+						</div>
+						<div className="d-flex align-items-center">
+							<div
+								className="border border-warning border-2 rounded"
+								style={{
+									width: "15px",
+									height: "15px",
+								}}
+							></div>{" "}
+							<p className="m-0 ms-2">More than half a day</p>
+						</div>
+						<div className="d-flex align-items-center">
+							<div
+								className="border border-2 rounded"
+								style={{
+									width: "15px",
+									height: "15px",
+								}}
+							></div>{" "}
+							<p className="m-0 ms-2">Less than half a day</p>
+						</div>
 					</div>
 				</CardBasicTitle>
 			</div>
@@ -275,7 +360,7 @@ class DataManager extends Component {
 
 	render() {
 		return (
-			<div className="container-fluid ms-2 me-2 d-flex align-items-start">
+			<div className="container-fluid ms-2 me-2 d-flex flex-wrap align-items-start">
 				<CardBasicTitle title={"Available data"}>
 					{this.setCalendar()}
 				</CardBasicTitle>
