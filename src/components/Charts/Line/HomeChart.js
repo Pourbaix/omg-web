@@ -41,9 +41,10 @@ const DefaultHomeChart = (props) => {
 	});
 
 	const [tagsDisplay, setTagsDisplay] = useState(
-		JSON.parse(window.localStorage.getItem("defaultChartSettings"))[
-			"displayTags"
-		] !== "undefined"
+		JSON.parse(window.localStorage.getItem("defaultChartSettings")) &&
+			JSON.parse(window.localStorage.getItem("defaultChartSettings"))[
+				"displayTags"
+			] !== "undefined"
 			? JSON.parse(window.localStorage.getItem("defaultChartSettings"))[
 					"displayTags"
 			  ]
