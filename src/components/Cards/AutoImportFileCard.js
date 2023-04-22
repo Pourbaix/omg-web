@@ -8,7 +8,7 @@ import Loading from "../../assets/loading.svg";
 import Checked from "../../assets/checked.svg";
 import Error from "../../assets/error.svg";
 import Save from "../../assets/save.svg";
-import "../../styles/scss/cards/autoImport.scss";
+import "../../styles/scss/components/cards/autoImport.scss";
 
 const AutoImportFileCard = () => {
 	const username = useRef(null);
