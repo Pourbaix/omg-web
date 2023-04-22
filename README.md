@@ -1,6 +1,6 @@
 # Welcome to Oh My Glucose Repository !
 
-![image](https://user-images.githubusercontent.com/71372371/229343549-d910a565-c7a1-43b5-bfef-febe23cf7c9c.png)
+![image](https://user-images.githubusercontent.com/71372371/233782292-b9e099d2-cf33-4465-aec8-136cbedb7be6.png)
 
 ### This application is built by students for their TFE.
 
@@ -8,9 +8,9 @@ The main goal is to produce an app for diabetics to help them better manage thei
 
 This application mainly provides:
 
--   systems to import insulin and glucose datas
+-   systems to import insulin and glucose data
 -   tags to mark events
--   charts (graphs) to view the datas and the tags
+-   charts (graphs) to view the data and the tags
 
 This is the frontend part of the app, it is also composed of a backend side, click [here](https://github.com/Pourbaix/omg-server) to go to this repository.
 
