@@ -1,4 +1,8 @@
 export const useRemoveTodayData = (array) => {
+	if (typeof array !== "object" || !(array instanceof Array)) {
+		return 0;
+	}
+
 	let startOfDay = new Date();
 	startOfDay.setHours(0);
 	startOfDay.setMinutes(0);

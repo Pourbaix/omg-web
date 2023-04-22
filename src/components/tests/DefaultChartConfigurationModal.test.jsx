@@ -8,12 +8,18 @@ import DefaultChartConfigModal from "../Modals/DefaultChartConfigModal";
 
 describe("Testing the modal component", () => {
 	beforeEach(() => {
+		// This is used to register calls to localStorage methods
 		Object.defineProperty(window, "localStorage", {
 			value: {
 				setItem: jest.fn(() => null),
 				getItem: jest.fn(() => null),
 			},
 			writable: true,
+		});
+		Object.defineProperty(window, "location", {
+			value: {
+				reload: jest.fn(() => null),
+			},
 		});
 	});
 
@@ -42,7 +48,7 @@ describe("Testing the modal component", () => {
 		expect(screen.getAllByRole("heading")[0]).toHaveTextContent(
 			"Welcome to the default chart configuration!"
 		);
-		expect(screen.getAllByRole("heading").length === 3).toBeTruthy();
+		expect(screen.getAllByRole("heading").length === 4).toBeTruthy();
 	});
 
 	test("test that the modal closes correctly", async () => {
@@ -97,12 +103,13 @@ describe("Testing the modal component", () => {
 		await userEvent.click(screen.getByLabelText("Glucose data"));
 		await userEvent.click(screen.getByLabelText("24h"));
 		await userEvent.click(screen.getByRole("button"));
+		await userEvent.click(screen.getByLabelText("Display Tags?"));
 
 		expect(window.localStorage.setItem).toHaveBeenCalledTimes(1);
 		expect(reloadChartState).toBeTruthy();
 		expect(window.localStorage.setItem).toHaveBeenCalledWith(
 			"defaultChartSettings",
-			'{"types":{"glucose":true,"basal":false,"meal":false,"correction":false},"period":"24"}'
+			'{"types":{"glucose":true,"basal":false,"meal":false,"correction":false},"period":"24","displayTags":false}'
 		);
 	});
 

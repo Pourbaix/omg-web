@@ -1,5 +1,5 @@
-export const useProcessAvg = (list, dataToProcess) => {
-	if (list.length) {
+export const useProcessAvg = (list, dataToProcess = "") => {
+	if (list.length && typeof list == "object" && list instanceof Array) {
 		if (dataToProcess) {
 			const initial = 0;
 			// Le reduce retourne la somme totale des éléments de l'array.
