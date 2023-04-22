@@ -43,7 +43,7 @@ const IndicatorBar = (props) => {
 			// Position is in the right red part
 
 			let maxlim = max + dim1 / 3;
-			console.log("maxlim: ", maxlim);
+			// console.log("maxlim: ", maxlim);
 			let finalPosPercentage = "0.0";
 			if (actualPosition >= maxlim) {
 				finalPosPercentage = 100.0 - pannelWidthPerc / 2 + "%";
@@ -65,11 +65,11 @@ const IndicatorBar = (props) => {
 			indicator.current.style.color = "#e74a3b";
 		} else if (actualPosition < min) {
 			// Position is in the left red part
-			console.log(typeof actualPosition);
-			console.log(typeof min);
-			console.log(actualPosition < min);
+			// console.log(typeof actualPosition);
+			// console.log(typeof min);
+			// console.log(actualPosition < min);
 			let minlim = min - dim1 / 3;
-			console.log("minlim: ", minlim);
+			// console.log("minlim: ", minlim);
 			let finalPosPercentage = "0.0";
 			if (actualPosition <= minlim) {
 				finalPosPercentage = 0.0 - pannelWidthPerc / 2 + "%";
@@ -98,7 +98,10 @@ const IndicatorBar = (props) => {
 					{actualPosition}
 				</div>
 				<div className="indicator_container" ref={container}>
-					<div className="indicator_background bg-danger"></div>
+					<div className="indicator_background">
+						<div></div>
+						<div></div>
+					</div>
 					<div
 						className="indicator_separator"
 						style={{ left: "20%" }}

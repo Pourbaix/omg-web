@@ -1,6 +1,6 @@
 import { useState, useRef, useEffect } from "react";
 import { useNavigate } from "react-router";
-import IndicatorBar from "../components/StatsComponents/indicatorBar";
+import IndicatorBar from "../components/StatsComponents/IndicatorBar.js";
 import DateTimeRangePicker from "@wojtekmaj/react-datetimerange-picker";
 import { getDataInRange, checkMissingData } from "../services/omgServer";
 import { useProcessAvg } from "../hooks/useProcessAvg";
@@ -8,7 +8,7 @@ import { useProcessAvg } from "../hooks/useProcessAvg";
 import { useProcessTimeInTargetZone } from "../hooks/useProcessTimeInTargetZone";
 import { useCreateGroupByDate } from "../hooks/useCreateGroupByDate";
 import { useCreateGroupByType } from "../hooks/useCreateGroupByType";
-import { useProcessSumstWithArray } from "../hooks/useProcessSumsWithArray";
+import { useProcessSumsWithArray } from "../hooks/useProcessSumsWithArray";
 import { useRemoveTodayData } from "../hooks/useRemoveTodayData";
 import CardBasicTitle from "../components/Cards/CardBasicTitle";
 import { element } from "prop-types";
@@ -78,7 +78,7 @@ const Statistics = () => {
 
 	const renderSettings = () => {
 		return (
-			<div className="p-3">
+			<div className="p-3 w-100">
 				{configState ? (
 					""
 				) : (
@@ -94,7 +94,7 @@ const Statistics = () => {
 					className="d-flex flex-row w-100 flex-wrap"
 					style={{ gap: "15px" }}
 				>
-					<div className="p-3 border border-2 border-primary">
+					<div className="p-3 border border-2 border-primary rounded">
 						<h5 className="text-dark testtest">
 							Configure effective time range:
 						</h5>
@@ -195,7 +195,7 @@ const Statistics = () => {
 							)}
 						</div>
 					</div>
-					<div className="p-3 border border-2 border-primary">
+					<div className="p-3 border border-2 border-primary rounded">
 						<h5 className="text-black">
 							Configure max and min glucose range:
 						</h5>
@@ -290,7 +290,7 @@ const Statistics = () => {
 					let typeSortedData = useCreateGroupByType(
 						useRemoveTodayData(insulinData)
 					);
-
+					console.log(typeSortedData);
 					function dateSort(a, b) {
 						return new Date(a.datetime) > new Date(b.datetime)
 							? 1
@@ -300,15 +300,15 @@ const Statistics = () => {
 					}
 
 					// Summ all the datas corresponding to a day
-					let correctionValuesSumList = useProcessSumstWithArray(
+					let correctionValuesSumList = useProcessSumsWithArray(
 						useCreateGroupByDate(typeSortedData[0].sort(dateSort)),
 						"CORRECTION"
 					);
-					let mealValuesSumList = useProcessSumstWithArray(
+					let mealValuesSumList = useProcessSumsWithArray(
 						useCreateGroupByDate(typeSortedData[1].sort(dateSort)),
 						"MEAL"
 					);
-					let basalValuesSumList = useProcessSumstWithArray(
+					let basalValuesSumList = useProcessSumsWithArray(
 						useCreateGroupByDate(typeSortedData[2].sort(dateSort)),
 						"AUTO_BASAL_DELIVERY"
 					);
@@ -425,7 +425,12 @@ const Statistics = () => {
 										</div>
 										<div className="m-3 ms-1">
 											▹ Percentage of time in{" "}
-											<span className="fw-bold text-danger">
+											<span
+												className="fw-bold"
+												style={{
+													color: "rgb(249, 220, 4)",
+												}}
+											>
 												hyper
 											</span>{" "}
 											zone:{" "}

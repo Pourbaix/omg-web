@@ -19,7 +19,18 @@
 			left: 0;
 			top: 0;
 			z-index: 1;
+			display: flex;
 		}
+		.indicator_background > div {
+			height: 100%;
+			width: 50%;
+			background-color: rgb(231, 74, 59);
+		}
+
+		.indicator_background > div:nth-child(2) {
+			background-color: rgb(249, 220, 4);
+		}
+
 		.indicator_front {
 			width: 60%;
 			height: 100%;
