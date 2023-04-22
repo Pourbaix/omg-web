@@ -16,7 +16,11 @@ import {
 import { useRef, useEffect, useState } from "react";
 import { Line, Bar, Chart } from "react-chartjs-2";
 import "chartjs-adapter-date-fns";
-import { getLastXhData, getTagsInRange } from "../../../services/omgServer";
+import {
+	getLastXhData,
+	getTagsInRange,
+	checkMissingData,
+} from "../../../services/omgServer";
 import { useCreateDataStructureHomeChart } from "../../../hooks/useCreateDataStructure";
 import Meal from "../../../assets/meal.svg";
 
@@ -46,9 +50,32 @@ const DefaultHomeChart = (props) => {
 			: false
 	);
 
+	const [dataHoles, setDataHoles] = useState([]);
+	const [filteredDataHoles, setFilteredDataHoles] = useState([]);
+
 	const chartRef = useRef(null);
 
 	const title = useRef("Chart for last 24h data");
+
+	const tagsColorList = [
+		"#8934eb",
+		"#3468eb",
+		"#34dceb",
+		"#34eb5c",
+		"#96eb34",
+		"#e2eb34",
+		"#ebab34",
+		"#eb3d34",
+		"#eb345f",
+		"#eb34cc",
+		"#b434eb",
+		"#2e2e2e",
+		"#34eb89",
+		"#2900cc",
+		"#b100cc",
+		"#00cc22",
+		"#cccc00",
+	];
 
 	ChartJS.register([
 		TimeScale,
@@ -90,6 +117,25 @@ const DefaultHomeChart = (props) => {
 		}
 	};
 
+	const down = (ctx, value) =>
+		ctx.p0.parsed.y > ctx.p1.parsed.y ? value : undefined;
+
+	const skipped = (ctx, value) =>
+		ctx.p0.skip || ctx.p1.skip ? value : undefined;
+
+	const holes = (ctx, value) => {
+		// console.log(ctx);
+		let final_value = undefined;
+		filteredDataHoles.forEach((element) => {
+			if (
+				ctx.p0.raw.datetime == element.start &&
+				ctx.p1.raw.datetime == element.end
+			) {
+				final_value = value;
+			}
+		});
+		return final_value;
+	};
 	let data = {
 		datasets: [
 			{
@@ -128,6 +174,10 @@ const DefaultHomeChart = (props) => {
 				},
 				hidden: !dataState["glucose"],
 				order: 2,
+				segment: {
+					borderDash: (ctx) => holes(ctx, [4, 4]),
+					borderColor: (ctx) => holes(ctx, "grey"),
+				},
 			},
 			{
 				type: "bar",
@@ -242,13 +292,31 @@ const DefaultHomeChart = (props) => {
 				chartArea: { top, bottom, height },
 				scales: { x },
 			} = chart;
-			console.log(tagsDisplay);
+
+			function dateSort(a, b) {
+				return new Date(a.startDatetime) > new Date(b.startDatetime)
+					? 1
+					: new Date(a.startDatetime) < new Date(b.startDatetime)
+					? -1
+					: 0;
+			}
+
+			const findHeightFromDatetime = (ISODate) => {
+				let date = new Date(ISODate);
+				let hour = date.getMinutes();
+				let perc = hour / 60;
+				// console.log(perc);
+				return perc;
+			};
+
+			// console.log(tagsDisplay);
 			if (plugins.data && tagsDisplay) {
-				plugins.data.forEach((tag) => {
+				console.log(plugins.data);
+				plugins.data.sort(dateSort).forEach((tag, index) => {
 					ctx.save();
 					ctx.beginPath();
-					ctx.strokeStyle = "#1cc88a";
-					ctx.lineWidth = 15;
+					ctx.strokeStyle = tagsColorList[(index + 1) % 16];
+					ctx.lineWidth = 1.5;
 					ctx.moveTo(
 						x.getPixelForValue(
 							new Date(tag.startDatetime).getTime()
@@ -264,16 +332,18 @@ const DefaultHomeChart = (props) => {
 					ctx.stroke();
 
 					const angle = Math.PI / 180;
+					findHeightFromDatetime(tag.startDatetime);
 					ctx.translate(
 						x.getPixelForValue(
 							new Date(tag.startDatetime).getTime()
-						),
-						height / 2 + top
+						) + 5,
+						top + height / 8 + (height / 16) * ((index + 1) % 8)
 					);
+
 					ctx.rotate(90 * angle);
 					ctx.font = "bold 12px sans-serif";
 					ctx.textAlign = "center";
-					ctx.fillStyle = "white";
+					ctx.fillStyle = tagsColorList[(index + 1) % 16];
 					ctx.fillText(tag.name, 0, 0);
 
 					ctx.restore();
@@ -376,14 +446,14 @@ const DefaultHomeChart = (props) => {
 				beginAtZero: true,
 				type: "linear",
 				position: "right",
-				max: 8,
+				max: 2.25,
 				display: dataState["correction"],
 				reverse: true,
 				ticks: {
 					color: "#ba03fc",
 					callback: (label, index, labels) => {
 						// console.log(label, index, labels[index]);
-						return label > 7 ? "" : label;
+						return label > 2 ? "" : label;
 					},
 				},
 				title: {
@@ -625,7 +695,12 @@ const DefaultHomeChart = (props) => {
 		const getData = async () => {
 			title.current = "Chart for last " + period + "h data:";
 			let response = await getLastXhData(parseInt(period));
+			let holes = await checkMissingData();
+			console.log(response);
 			let dataStructure = useCreateDataStructureHomeChart(response);
+
+			setDataHoles(holes);
+			// console.log(holes);
 			setMaxGlucoseValue(findMaxValue(dataStructure));
 			setGlobalData(dataStructure);
 		};
@@ -655,6 +730,15 @@ const DefaultHomeChart = (props) => {
 					dates["last"]
 				);
 				setTagsData(tagsRes);
+				console.log(tagsRes);
+				setFilteredDataHoles(
+					dataHoles.filter((element) => {
+						return (
+							new Date(element.start) >= new Date(startDate) &&
+							new Date(element.end) <= new Date(endDate)
+						);
+					})
+				);
 			}
 		};
 		postProcess();
