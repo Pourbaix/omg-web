@@ -327,7 +327,7 @@ class TagsHistory extends Component {
 						</a>
 						{/*<!-- Card Content - Collapse -->*/}
 						<div
-							className="collapse"
+							// className="collapse"
 							id={
 								"tagCard" +
 								useFormatStringForId(tag["name"]) +
@@ -448,9 +448,8 @@ class TagsHistory extends Component {
 		}
 		return (
 			<div className="container-fluid">
-				<div sortByActivationTime={sortByActivationTime}>
-					{scrollCompo}
-				</div>
+				{/* <div sortByActivationTime={sortByActivationTime}> */}
+				<div>{scrollCompo}</div>
 			</div>
 		);
 	}

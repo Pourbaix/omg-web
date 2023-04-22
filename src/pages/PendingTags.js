@@ -165,7 +165,7 @@ class PendingTags extends Component {
 						</a>
 						{/*<!-- Card Content - Collapse -->*/}
 						<div
-							className="collapse"
+							// className="collapse"
 							id={
 								"pendingTagsCard" +
 								useFormatStringForId(pendingTag.name) +
