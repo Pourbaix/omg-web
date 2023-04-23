@@ -125,7 +125,8 @@ const DefaultHomeChart = (props) => {
 		ctx.p0.skip || ctx.p1.skip ? value : undefined;
 
 	const holes = (ctx, value) => {
-		// console.log(ctx);
+		console.log(ctx);
+		console.log(filteredDataHoles);
 		let final_value = undefined;
 		filteredDataHoles.forEach((element) => {
 			if (
@@ -266,7 +267,7 @@ const DefaultHomeChart = (props) => {
 				chartArea: { top, bottom, left, right, width, height },
 				scales: { x, y },
 			} = chart;
-			console.log(ctx);
+			// console.log(ctx);
 			ctx.save();
 
 			ctx.beginPath();
@@ -312,7 +313,7 @@ const DefaultHomeChart = (props) => {
 
 			// console.log(tagsDisplay);
 			if (plugins.data && tagsDisplay) {
-				console.log(plugins.data);
+				// console.log(plugins.data);
 				plugins.data.sort(dateSort).forEach((tag, index) => {
 					ctx.save();
 					ctx.beginPath();
@@ -735,8 +736,9 @@ const DefaultHomeChart = (props) => {
 				setFilteredDataHoles(
 					dataHoles.filter((element) => {
 						return (
-							new Date(element.start) >= new Date(startDate) &&
-							new Date(element.end) <= new Date(endDate)
+							new Date(element.start) >=
+								new Date(dates["first"]) &&
+							new Date(element.end) <= new Date(dates["last"])
 						);
 					})
 				);
