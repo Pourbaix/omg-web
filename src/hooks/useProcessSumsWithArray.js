@@ -21,7 +21,11 @@ export const useProcessSumsWithArray = (objList, insulinType) => {
 				objList.forEach((element) => {
 					let init = 0.0;
 					let sum = element.reduce(
-						(acc, curr) => acc + curr["carbInput"],
+						(acc, curr) =>
+							acc +
+							JSON.parse(curr["insulinDescr"])[
+								"deliveredFastAmount"
+							],
 						init
 					);
 					finalArray.push(sum);
