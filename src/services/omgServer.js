@@ -4,7 +4,6 @@ import store from "../redux/store";
 // Service file that contains all the requests for the OMG server API.
 //
 const hostUrl = process.env.REACT_APP_API_HOST;
-// const hostUrl = "http://127.0.0.1:3001/api" // Dev URL
 
 const headers = new Headers({
 	"Content-Type": "application/json",
