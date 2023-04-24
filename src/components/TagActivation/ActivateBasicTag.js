@@ -68,43 +68,38 @@ class ActivateBasicTag extends Component {
 					resultItem: {
 						highlight: true,
 						tag: "p",
-						class: "search_item",
+						class: "search_item text-primary",
+						element: (item, data) => {
+							console.log(item);
+							item.setAttribute(
+								"onclick",
+								'document.getElementById("manualBasicTagInput").value = ' +
+									'"' +
+									item.innerText +
+									'"'
+							);
+						},
 					},
 					resultsList: {
 						class: "position-fixed bg-white border border-primary border-3 p-2 search_container ",
 						tabSelect: true,
-						element: (list, data) => {
-							console.log(list, data);
-							data.results.forEach((element) => {
-								console.log(element.match);
-							});
-						},
+						// element: (list, data) => {
+						// 	console.log(list, data);
+						// 	data.results.forEach((element) => {
+						// 		console.log(element.match);
+						// 	});
+						// },
 					},
 					threshold: 1,
 					wrapper: true,
-					event: {
-						list: {
-							click: (event) => {
-								console.log(event);
-							},
-						},
-					},
 				});
-				// let containerId = document.getElementById("manualBasicTagInput")
-				// 	.attributes["aria-controls"].value;
-				// document
-				// 	.getElementById(containerId)
-				// 	.addEventListener("click", (event) => {
-				// 		console.log(event);
-				// 	});
-				// console.log(document.getElementById(containerId).childNodes);
-				// console.log(autoCompleteJS);
-				// document.getElement("search_item").addEventListener("click", (event) => {
-				// 	console.log(event);
-				// });;
 			}
 		});
 	}
+
+	clickSearchElement = (element) => {
+		console.log(element);
+	};
 
 	// componentDidUpdate(prevProps, prevState, snapshot) {
 	//     if (this.state.chosenTag !== prevState.chosenTag) {

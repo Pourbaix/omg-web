@@ -5,3 +5,12 @@
 .search_field {
 	width: 50vw;
 }
+
+.search_item {
+	cursor: pointer;
+	padding: 5px;
+}
+
+.search_item:hover {
+	background-color: rgba(0, 0, 0, 0.03);
+}
