@@ -108,13 +108,17 @@ const DefaultHomeChart = (props) => {
 		}
 	};
 
-	const processBarWidth = () => {
-		let currentMsDisplayed =
-			new Date(endDate).getTime() - new Date(startDate).getTime();
-		// console.log(currentMsDisplayed / 3600000);
-		let currentHoursDisplayed = currentMsDisplayed / 3600000;
-		if (currentHoursDisplayed) {
-			setBarWidth(52 / currentHoursDisplayed);
+	const processBarWidth = (dataStartDate = null, dataEndDate = null) => {
+		if (dataStartDate && dataEndDate) {
+			let currentMsDisplayed =
+				new Date(dataEndDate).getTime() -
+				new Date(dataStartDate).getTime();
+			let currentHoursDisplayed = currentMsDisplayed / 3600000;
+			if (currentHoursDisplayed) {
+				setBarWidth(52 / currentHoursDisplayed);
+			}
+		} else {
+			setBarWidth(18);
 		}
 	};
 
@@ -125,8 +129,6 @@ const DefaultHomeChart = (props) => {
 		ctx.p0.skip || ctx.p1.skip ? value : undefined;
 
 	const holes = (ctx, value) => {
-		console.log(ctx);
-		console.log(filteredDataHoles);
 		let final_value = undefined;
 		filteredDataHoles.forEach((element) => {
 			if (
@@ -260,14 +262,12 @@ const DefaultHomeChart = (props) => {
 	const tagsLabels = {
 		id: "tagsLabels",
 		afterDatasetsDraw(chart, args, plugins) {
-			// console.log(chart, args, plugins);
 			const {
 				ctx,
 				data,
 				chartArea: { top, bottom, left, right, width, height },
 				scales: { x, y },
 			} = chart;
-			// console.log(ctx);
 			ctx.save();
 
 			ctx.beginPath();
@@ -307,13 +307,10 @@ const DefaultHomeChart = (props) => {
 				let date = new Date(ISODate);
 				let hour = date.getMinutes();
 				let perc = hour / 60;
-				// console.log(perc);
 				return perc;
 			};
 
-			// console.log(tagsDisplay);
 			if (plugins.data && tagsDisplay) {
-				// console.log(plugins.data);
 				plugins.data.sort(dateSort).forEach((tag, index) => {
 					ctx.save();
 					ctx.beginPath();
@@ -398,7 +395,6 @@ const DefaultHomeChart = (props) => {
 						};
 					},
 					color: (context) => {
-						// console.log(context);
 						const color =
 							context.tick &&
 							new Date(context.tick.value)
@@ -409,7 +405,6 @@ const DefaultHomeChart = (props) => {
 						return color;
 					},
 					callback: (label, index, labels) => {
-						// console.log(label, index, labels[index]);
 						if (
 							labels[index].major &&
 							new Date(label)
@@ -454,7 +449,6 @@ const DefaultHomeChart = (props) => {
 				ticks: {
 					color: "#ba03fc",
 					callback: (label, index, labels) => {
-						// console.log(label, index, labels[index]);
 						return label > 2 ? "" : label;
 					},
 				},
@@ -485,7 +479,6 @@ const DefaultHomeChart = (props) => {
 				ticks: {
 					color: "#df4e83",
 					callback: (label, index, labels) => {
-						// console.log(label, index, labels[index]);
 						return label > 0.5 ? "" : label;
 					},
 				},
@@ -527,8 +520,6 @@ const DefaultHomeChart = (props) => {
 						size: "12px",
 					},
 					generateLabels: (chart) => {
-						// console.log("-----------CHART:-------------");
-						// console.log(chart);
 						let mealImage = new Image(22, 22);
 						mealImage.src = Meal;
 						let pointStyleArray = ["cirle", "circle", mealImage];
@@ -545,9 +536,6 @@ const DefaultHomeChart = (props) => {
 					},
 				},
 				onClick: (click, legendItem, legend) => {
-					// console.log(click);
-					// console.log(legendItem);
-					// console.log(legend);
 					if (needsToBeDisplayed(legendItem.text)) {
 						const datasets = legend.legendItems.map(
 							(dataset, index) => {
@@ -556,7 +544,6 @@ const DefaultHomeChart = (props) => {
 						);
 
 						const index = datasets.indexOf(legendItem.text);
-						// console.log(index);
 						if (legend.chart.isDatasetVisible(index) === true) {
 							if (index == 2) {
 								let targetDataset =
@@ -570,13 +557,8 @@ const DefaultHomeChart = (props) => {
 							chartRef.current["legend"].legendItems[
 								index
 							].fontColor = "#bfbfbf";
-							// console.log(
-							// 	chartRef.current["legend"].legendItems[index]
-							// 		.fontColor
-							// );
 							chartRef.current.legend.update();
 							chartRef.current.update();
-							// console.log(chartRef.current);
 						} else {
 							if (index == 2) {
 								let targetDataset =
@@ -670,7 +652,6 @@ const DefaultHomeChart = (props) => {
 				}
 			});
 		}
-		// console.log(maxValue);
 		return maxValue === 0 ? 400 : maxValue + 50;
 	};
 
@@ -698,11 +679,9 @@ const DefaultHomeChart = (props) => {
 			title.current = "Chart for last " + period + "h data:";
 			let response = await getLastXhData(parseInt(period));
 			let holes = await checkMissingData();
-			console.log(response);
 			let dataStructure = useCreateDataStructureHomeChart(response);
 
 			setDataHoles(holes);
-			// console.log(holes);
 			setMaxGlucoseValue(findMaxValue(dataStructure));
 			setGlobalData(dataStructure);
 		};
@@ -710,7 +689,6 @@ const DefaultHomeChart = (props) => {
 	}, [props.reloadProps]);
 
 	useEffect(() => {
-		// console.log(globalData);
 		const postProcess = async () => {
 			let dates = {
 				first: "",
@@ -726,13 +704,13 @@ const DefaultHomeChart = (props) => {
 				props.setDates(dates);
 				setStartDate(dates["first"]);
 				setEndDate(dates["last"]);
-				processBarWidth();
+				processBarWidth(dates["first"], dates["last"]);
 				let tagsRes = await getTagsInRange(
 					dates["first"],
 					dates["last"]
 				);
 				setTagsData(tagsRes);
-				console.log(tagsRes);
+				// console.log(tagsRes);
 				setFilteredDataHoles(
 					dataHoles.filter((element) => {
 						return (
