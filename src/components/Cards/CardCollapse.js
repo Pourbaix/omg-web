@@ -25,7 +25,7 @@ class CardCollapse extends Component {
 				<a
 					href="#collapseCardExample"
 					className="d-block card-header py-3 collapsed"
-					data-toggle="collapse"
+					data-bs-toggle="collapse"
 					role="button"
 					aria-expanded="true"
 					aria-controls="collapseCardExample"

@@ -287,7 +287,7 @@ class ActivateBasicTag extends Component {
 					<p className={"mb-0 text-uppercase"}>Recent tags</p>
 					<div
 						className={"d-inline-flex flex-wrap btn-group-toggle"}
-						data-toggle={"buttons"}
+						data-bs-toggle={"buttons"}
 					>
 						{this.state.recentTags.map((tag) => (
 							<label

@@ -280,7 +280,7 @@ class TagsHistory extends Component {
 								this.state.tagsHistory.indexOf(tag)
 							}
 							className="card-header collapsed"
-							data-toggle="collapse"
+							data-bs-toggle="collapse"
 							role="button"
 							aria-expanded="true"
 							aria-controls={
@@ -327,7 +327,7 @@ class TagsHistory extends Component {
 						</a>
 						{/*<!-- Card Content - Collapse -->*/}
 						<div
-							// className="collapse"
+							className="collapse"
 							id={
 								"tagCard" +
 								useFormatStringForId(tag["name"]) +

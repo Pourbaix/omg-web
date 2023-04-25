@@ -349,7 +349,7 @@ class TagDetection extends Component {
 								this.state.rangesHistory.indexOf(range)
 							}
 							className="card-header collapsed"
-							data-toggle="collapse"
+							data-bs-toggle="collapse"
 							role="button"
 							aria-expanded="true"
 							aria-controls={

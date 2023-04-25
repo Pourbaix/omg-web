@@ -194,7 +194,7 @@ class TagsManager extends Component {
 									<a
 										href={"#tagCard" + tag["id"]}
 										className="card-header collapsed"
-										data-toggle="collapse"
+										data-bs-toggle="collapse"
 										role="button"
 										aria-expanded="true"
 										aria-controls={"tagCard" + tag["id"]}

@@ -121,7 +121,7 @@ class PendingTags extends Component {
 								this.state.pendingTags.indexOf(pendingTag)
 							}
 							className="card-header collapsed"
-							data-toggle="collapse"
+							data-bs-toggle="collapse"
 							role="button"
 							aria-expanded="true"
 							aria-controls={
@@ -165,7 +165,7 @@ class PendingTags extends Component {
 						</a>
 						{/*<!-- Card Content - Collapse -->*/}
 						<div
-							// className="collapse"
+							className="collapse"
 							id={
 								"pendingTagsCard" +
 								useFormatStringForId(pendingTag.name) +
