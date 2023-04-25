@@ -61,13 +61,13 @@ class Topbar extends Component {
 							className="nav-link dropdown-toggle"
 							id="userDropdown"
 							role="button"
-							data-toggle="dropdown"
+							data-bs-toggle="dropdown"
 							aria-haspopup="true"
 							aria-expanded="false"
 						>
 							<span
 								className="me-2 d-lg-inline text-gray-600"
-								onClick={() => this.logout()}
+								// onClick={() => this.logout()}
 							>
 								User
 							</span>
@@ -90,7 +90,7 @@ class Topbar extends Component {
 							<div className="dropdown-divider" />
 							<button
 								className="dropdown-item"
-								data-toggle="modal"
+								data-bs-toggle="modal"
 								data-target="#logoutModal"
 								onClick={() => {
 									this.logout();
