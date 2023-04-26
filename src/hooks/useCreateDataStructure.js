@@ -45,10 +45,12 @@ export const useCreateDataStructureHomeChart = (obj) => {
 							];
 							break;
 						case "MEAL":
-							data["meal"] = JSON.parse(x.insulinDescr)[
-								"deliveredFastAmount"
-							];
-							break;
+							if (typeof x.insulinDescr === "string") {
+								data["meal"] = JSON.parse(x.insulinDescr)[
+									"deliveredFastAmount"
+								];
+								break;
+							}
 					}
 				});
 			let pointStyle = "circle";
