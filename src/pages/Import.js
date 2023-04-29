@@ -8,7 +8,7 @@ import AutoImportFileCard from "../components/Cards/AutoImportFileCard";
 class Import extends Component {
 	render() {
 		return (
-			<div className="container-fluid d-flex ms-2 me-2">
+			<div className="container-fluid d-flex ms-2 me-2 flex-wrap">
 				<ImportFileCard />
 				<AutoImportFileCard />
 			</div>

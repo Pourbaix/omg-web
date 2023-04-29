@@ -305,7 +305,14 @@ const Statistics = () => {
 						"CORRECTION"
 					);
 					let mealValuesSumList = useProcessSumsWithArray(
-						useCreateGroupByDate(typeSortedData[1].sort(dateSort)),
+						useCreateGroupByDate(
+							typeSortedData[1]
+								.sort(dateSort)
+								.filter(
+									(element) =>
+										typeof element.insulinDescr === "string"
+								)
+						),
 						"MEAL"
 					);
 					let basalValuesSumList = useProcessSumsWithArray(
