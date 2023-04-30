@@ -262,6 +262,8 @@ class ImportFileCard extends Component {
 								);
 								this.setState({ redirect: true });
 							}
+						} else {
+							this.setState({ upload: 2 });
 						}
 					} else {
 						this.setState({ upload: -1 });
