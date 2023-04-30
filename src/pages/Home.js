@@ -20,9 +20,18 @@ const Home = () => {
 	const [endDatetime, setEndDatetime] = useState("");
 
 	const reloadChart = () => {
-		// console.log("Reload");
 		setReloadSeed(Math.random());
-		// console.log(reloadSeed);
+	};
+
+	const isOnMobile = () => {
+		let mobileNav = false;
+		if (
+			navigator.userAgent.match(/Android/i) ||
+			navigator.userAgent.match(/iPhone/i)
+		) {
+			mobileNav = true;
+		}
+		return "ontouchstart" in document.documentElement || mobileNav;
 	};
 
 	const generateConfigInfo = () => {
@@ -43,7 +52,6 @@ const Home = () => {
 	};
 
 	const setDates = (params) => {
-		// console.log(params);
 		setStartDatetime(new Date(params["first"]).toLocaleString());
 		setEndDatetime(new Date(params["last"]).toLocaleString());
 	};
@@ -68,65 +76,79 @@ const Home = () => {
 				className="d-flex flex-column align-items-center"
 				style={{ position: "relative" }}
 			>
-				<h1 className="h1 mb-2 text-gray-800">
+				<h1 className="h1 mb-2 text-gray-800 text-center">
 					Welcome to OMG Web application !
 				</h1>
-				<div
-					className="d-flex flex-row w-100 justify-content-center align-items-center"
-					style={{ gap: "15px" }}
-				>
-					<div className="d-flex" style={{ width: "75%" }}>
-						{/* <DefaultHomeChart reloadProps={reloadSeed} /> */}
-						<DefaultHomeChart
-							reloadProps={reloadSeed}
-							setDates={setDates}
-						/>
-					</div>
-					<div className="d-flex flex-column border border-3 rounded p-4">
-						<h5 className="text-center">Active Configuration: </h5>
-						<p className="text-center fw-bold">
-							Data for last {period}h
-						</p>
-						<hr className="sidebar-divider my-0" />
-						<div className="mt-1 mb-1">{generateConfigInfo()}</div>
-						<hr className="sidebar-divider my-0" />
-						{startDatetime && endDatetime ? (
-							<div className="mt-1 mb-1">
-								<p className="mb-1">From: </p>
-								<p className="m-1 fw-bold">{startDatetime}</p>
-								<p className="mb-1"> To: </p>
-								<p className="m-1 fw-bold">{endDatetime}</p>
-							</div>
-						) : (
-							<p className="text-danger text-center fw-bold mt-4 mb-4">
-								No data to display
-							</p>
-						)}
-						<hr className="sidebar-divider my-0" />
-						<button
-							className="btn btn-primary mt-2 w-auto"
-							onClick={() => {
-								setModalState(true);
-								// console.log(modalState);
-							}}
+				{!isOnMobile() ? (
+					<>
+						<div
+							className="d-flex flex-row w-100 justify-content-center align-items-center"
+							style={{ gap: "15px" }}
 						>
-							Configure default Chart
-						</button>
-					</div>
-				</div>
-				{modalState ? (
-					<DefaultChartConfigModal
-						closeModal={() => {
-							// console.log("Modal disabled");
-							modalState
-								? setModalState(false)
-								: setModalState(true);
-							// console.log(modalState);
-						}}
-						reloadChart={() => {
-							reloadChart();
-						}}
-					/>
+							<div className="d-flex" style={{ width: "100%" }}>
+								{/* <DefaultHomeChart reloadProps={reloadSeed} /> */}
+								<DefaultHomeChart
+									reloadProps={reloadSeed}
+									setDates={setDates}
+								/>
+							</div>
+							<div className="d-flex flex-column border border-3 rounded p-4">
+								<h5 className="text-center">
+									Active Configuration:{" "}
+								</h5>
+								<p className="text-center fw-bold">
+									Data for last {period}h
+								</p>
+								<hr className="sidebar-divider my-0" />
+								<div className="mt-1 mb-1">
+									{generateConfigInfo()}
+								</div>
+								<hr className="sidebar-divider my-0" />
+								{startDatetime && endDatetime ? (
+									<div className="mt-1 mb-1">
+										<p className="mb-1">From: </p>
+										<p className="m-1 fw-bold">
+											{startDatetime}
+										</p>
+										<p className="mb-1"> To: </p>
+										<p className="m-1 fw-bold">
+											{endDatetime}
+										</p>
+									</div>
+								) : (
+									<p className="text-danger text-center fw-bold mt-4 mb-4">
+										No data to display
+									</p>
+								)}
+								<hr className="sidebar-divider my-0" />
+								<button
+									className="btn btn-primary mt-2 w-auto"
+									onClick={() => {
+										setModalState(true);
+										// console.log(modalState);
+									}}
+								>
+									Configure default Chart
+								</button>
+							</div>
+						</div>
+						{modalState ? (
+							<DefaultChartConfigModal
+								closeModal={() => {
+									// console.log("Modal disabled");
+									modalState
+										? setModalState(false)
+										: setModalState(true);
+									// console.log(modalState);
+								}}
+								reloadChart={() => {
+									reloadChart();
+								}}
+							/>
+						) : (
+							""
+						)}{" "}
+					</>
 				) : (
 					""
 				)}

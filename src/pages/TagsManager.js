@@ -334,7 +334,11 @@ class TagsManager extends Component {
 
 	render() {
 		return (
-			<div className={"d-flex flex-row align-items-start ps-4"}>
+			<div
+				className={
+					"d-flex flex-row align-items-start ps-4 flex-wrap pb-4"
+				}
+			>
 				<CardBasicTitle title={"Choose a tag"}>
 					<div
 						className={"d-flex flex-column"}

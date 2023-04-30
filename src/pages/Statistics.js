@@ -199,7 +199,7 @@ const Statistics = () => {
 						<h5 className="text-black">
 							Configure max and min glucose range:
 						</h5>
-						<div className="d-flex">
+						<div className="d-flex flex-wrap">
 							<div className="p-1">
 								<h5>Min:</h5>
 								<input
@@ -263,7 +263,7 @@ const Statistics = () => {
 		);
 	};
 
-	const renderGlucose = () => {
+	const renderStatistics = () => {
 		if (configState) {
 			if (loadingState) {
 				return (
@@ -404,13 +404,13 @@ const Statistics = () => {
 							)}
 							<div className="w-100 d-flex flex-wrap">
 								<div
-									className="m-3 me-0"
+									className="m-2 mb-0"
 									style={{ width: "max-content" }}
 								>
 									<CardBasicTitle
 										title={"Average glucose level per day"}
 									>
-										<div style={{ width: "350px" }}>
+										<div style={{ width: "300px" }}>
 											<IndicatorBar
 												min={lowLimit}
 												max={highLimit}
@@ -464,7 +464,7 @@ const Statistics = () => {
 									</CardBasicTitle>
 								</div>
 								<div
-									className="m-3 ms-0"
+									className="m-2"
 									style={{
 										width: "max-content",
 									}}
@@ -553,7 +553,7 @@ const Statistics = () => {
 		if (configState) {
 			switch (pageState) {
 				case 0:
-					return renderGlucose();
+					return renderStatistics();
 				case 1:
 					return renderSettings();
 			}

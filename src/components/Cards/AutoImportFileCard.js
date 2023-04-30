@@ -192,9 +192,12 @@ const AutoImportFileCard = () => {
 	return (
 		<div
 			className="card d-flex border-bottom-primary shadow h-100 py-2 mb-2 me-2"
-			style={{ maxWidth: "350px" }}
+			style={{ maxWidth: "350px", maxHeight: "max-content" }}
 		>
-			<div className="card-body" style={{ padding: "1rem" }}>
+			<div
+				className="card-body"
+				style={{ padding: "1rem", maxHeight: "80px" }}
+			>
 				<div className="flex-d no-gutters align-items-center">
 					<div className="col me-2">
 						<div className="text fw-bold text-primary text-uppercase">
@@ -204,24 +207,6 @@ const AutoImportFileCard = () => {
 				</div>
 				<hr className="sidebar-divider" />
 				<form className="ms-2 me-2">
-					{/* <div className="row form-group" style={{ margin: "2px" }}>
-						<label
-							className="form-check-label"
-							htmlFor="ManufacturerSelector"
-						>
-							Manufacturer (more comming)
-						</label>
-						<select
-							className="form-control"
-							id="ManufacturerSelector"
-							name="pumpModel"
-						>
-							<option value="minimed">Medtronic</option>
-						</select>
-						<div className="invalid-feedback">
-							You have to choose a model
-						</div>
-					</div> */}
 					<div className="row form-group" style={{ margin: "3px" }}>
 						<label className="form-check-label" htmlFor="username">
 							Username

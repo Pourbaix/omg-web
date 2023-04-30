@@ -206,7 +206,12 @@ class RoutesList extends Component {
 
 	showFooter() {
 		if (this.checkMobile()) {
-			return <Bottombar />;
+			return (
+				<>
+					<div style={{ marginTop: "40px", marginBottom: "40px" }} />
+					<Bottombar />
+				</>
+			);
 		} else {
 			return (
 				<footer className="row sticky-footer bg-white">
