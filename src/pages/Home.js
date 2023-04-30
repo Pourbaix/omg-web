@@ -85,7 +85,7 @@ const Home = () => {
 							className="d-flex flex-row w-100 justify-content-center align-items-center"
 							style={{ gap: "15px" }}
 						>
-							<div className="d-flex" style={{ width: "100%" }}>
+							<div className="d-flex" style={{ width: "75%" }}>
 								{/* <DefaultHomeChart reloadProps={reloadSeed} /> */}
 								<DefaultHomeChart
 									reloadProps={reloadSeed}
