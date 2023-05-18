@@ -1,14 +1,12 @@
 // The utils we are using to test the component
-import { cleanup, render, screen } from "@testing-library/react";
+import { cleanup, render, screen, prettyDOM } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import "@testing-library/jest-dom";
 import IndicatorBar from "../StatsComponents/IndicatorBar";
+import "../../styles/scss/stats/indicatorBar.scss";
 
 describe("Testing the IndicatorBar component", () => {
 	afterEach(cleanup);
-	test("no crash", () => {
-		expect(true).toBeTruthy();
-	});
 	test("test that the components renders correctly", async () => {
 		let max = 150;
 		let min = 60;
@@ -25,13 +23,11 @@ describe("Testing the IndicatorBar component", () => {
 	test("test that the indicator is at the right place", async () => {
 		// let max = 140;
 		// let min = 40;
-		// let actualPos = 90;
+		// let actualPos = 90.0;
 		// render(<IndicatorBar min={min} max={max} actualPosition={actualPos} />);
-		// console.log(await screen.findByText(actualPos));
-		// console.log(
-		// 	document.getElementsByClassName("actual_position_indicator")
-		// );
-		// expect(screen.findByText(actualPos)).toHaveStyle("left");
+		// let indicator = await screen.findByText(actualPos);
+		// console.log(window.getComputedStyle(indicator));
+		// console.log(prettyDOM(document));
 	});
 	test("test that the color of the indicator changes correctly", () => {});
 });

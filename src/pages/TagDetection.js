@@ -43,22 +43,34 @@ class TagDetection extends Component {
 			if (res) {
 				Promise.all(
 					res.map((range) => {
-						range.fromTime = range.fromTime.substring(0, 5);
-						range.toTime = range.toTime.substring(0, 5);
-						// let daysNumbers = [];
-						// let bitDays = range.daysSelected.toString(2);
-						// let j = 0;
-						// for (let i = bitDays.length; i > 0; i--) {
-						//     // console.log(bitDays[i-1]);
-						//     if (bitDays[i - 1] == "1") {
-						//         daysNumbers.push(j);
-						//     }
-						//     j++;
-						// }
+						// On va convertir les time de UTC0 en heure belge
+						let fromLocalDate = new Date();
+						let toLocalDate = new Date();
+
+						fromLocalDate.setUTCHours(range.fromTime.split(":")[0]);
+						fromLocalDate.setUTCMinutes(
+							range.fromTime.split(":")[1]
+						);
+
+						toLocalDate.setUTCHours(range.toTime.split(":")[0]);
+						toLocalDate.setUTCMinutes(range.toTime.split(":")[1]);
+
+						// On utilise donc le temps local pour afficher les ranges mais on stocke ces temps en UTC0 dans la DB
+						// Plus facile d'utiliser de l'UTC0 dans la DB
+						range.fromTime = fromLocalDate.toLocaleString([], {
+							hour: "2-digit",
+							minute: "2-digit",
+							hour12: false,
+						});
+						range.toTime = toLocalDate.toLocaleString([], {
+							hour: "2-digit",
+							minute: "2-digit",
+							hour12: false,
+						});
+
 						const daysNumbers = useNumberToArrayDayNameNumber(
 							range.daysSelected
 						);
-						// console.log("ici   "+ daysNumbers);
 						let daysSelectedString = "";
 						for (let dayNumber of daysNumbers) {
 							switch (dayNumber) {
@@ -85,7 +97,6 @@ class TagDetection extends Component {
 									break;
 							}
 						}
-						// this.setState({daysName: daysSelectedString})
 						range["daysString"] = daysSelectedString;
 					})
 				).then(() => this.setState({ rangesHistory: res }));
@@ -97,8 +108,7 @@ class TagDetection extends Component {
 
 	detectionTagInputChange = (event) => {
 		this.setState({ chosenDetectionTag: event.target.value });
-		// console.log('input value :\n'+ event.target.value);
-		// console.log('state chosenDetectionTag :\n'+ this.state.chosenDetectionTag);
+
 		if (this.state.status !== 0) {
 			this.setState({ status: 0 });
 		}
@@ -106,8 +116,6 @@ class TagDetection extends Component {
 
 	setFrom = (event) => {
 		this.setState({ fromTime: event.target.value });
-		// console.log('from input :\n'+ event.target.value);
-		// console.log('from state :\n'+ this.state.fromTime);
 		if (this.state.status !== 0) {
 			this.setState({ status: 0 });
 		}
@@ -121,21 +129,12 @@ class TagDetection extends Component {
 	};
 
 	weekDaysChange(day) {
-		// let selected = this.state.weekDaysSelected
-		// let find = selected.indexOf(day)
-		//
-		// if(find > -1) {
-		//     selected.splice(find, 1);
-		// } else {
-		//     selected.push(day);
-		// }
 		this.setState({
 			weekDaysSelected: useDayToAddDayInArray(
 				day,
 				this.state.weekDaysSelected
 			),
 		});
-		// console.log(selected);
 		if (this.state.status !== 0) {
 			this.setState({ status: 0 });
 		}
@@ -147,13 +146,26 @@ class TagDetection extends Component {
 			this.state.fromTime &&
 			this.state.toTime
 		) {
-			// console.log("loading");
-			// console.log("format data to post");
-			// console.log("post name, from, to and optionally days\nthen success or error");
 			let newRange = {};
+
+			// On crée deux nouvelles dates pour convertir les timesranges sélectionnées en UTC0
+			let fromLocalDate = new Date();
+			let toLocalDate = new Date();
+
+			fromLocalDate.setHours(this.state.fromTime.split(":")[0]);
+			fromLocalDate.setMinutes(this.state.fromTime.split(":")[1]);
+
+			toLocalDate.setHours(this.state.toTime.split(":")[0]);
+			toLocalDate.setMinutes(this.state.toTime.split(":")[1]);
+
 			newRange.name = this.state.chosenDetectionTag;
-			newRange["fromTime"] = this.state.fromTime;
-			newRange["toTime"] = this.state.toTime;
+
+			// On récupère les heures de début et de fin en UTC:0
+			newRange["fromTime"] = fromLocalDate
+				.toISOString()
+				.substring(11, 16);
+			newRange["toTime"] = toLocalDate.toISOString().substring(11, 16);
+
 			let sum = 127;
 			if (this.state.weekDaysSelected.length > 0) {
 				sum = this.state.weekDaysSelected.reduce(
@@ -164,26 +176,16 @@ class TagDetection extends Component {
 				);
 			}
 			newRange["daysSelected"] = sum;
-			// newRange["daysSelected"] = this.state.weekDaysSelected;
 			let currentCount = this.state.rangesHistoryCount;
 			this.setState({ rangesHistoryCount: currentCount++ });
 			let rangesHistoryNew = this.state.rangesHistory;
-			rangesHistoryNew.unshift(newRange);
 			this.setState({ rangesHistory: rangesHistoryNew });
-			// console.log(this.state.rangesHistoryCount);
-			// console.log(JSON.stringify(newRange)); // {"name":"fr","fromTime":"19:53","toTime":"19:53","daysSelected":112}
 			// OK donc newrange doit être envoyé en db
 			this.setState({ status: 1 });
-			console.log(
+			postRange(
 				newRange.name,
 				newRange.fromTime,
 				newRange.toTime,
-				newRange.daysSelected
-			);
-			postRange(
-				this.state.chosenDetectionTag,
-				this.state.fromTime,
-				this.state.toTime,
 				sum
 			).then((res) => {
 				if (res) {

@@ -73,92 +73,86 @@ class ImportFileCard extends Component {
 								let date = event.date;
 								let time = event.time;
 
-								// console.log("Date Bolus: "+date.replace(/-/g, "/")+"\nTime Bolus: "+time); // before replace: 22-05-03 18:32
+								// on remplace les - de la date par des /
 								let cleanedDate = date.replace(/-/g, "/");
+								// On crée une nouvelle date a partir de la date formatée et le time
+								// Cette date est en UTC 0
 								let initBolusDate = new Date(
 									cleanedDate + " " + time
 								);
-								// console.log("initBolusGMT0: "+initBolusDate); // Invalid Date
-								// code pour mettre en heure locale (db-->ui)
-								let basicBolusGmt = new Date(
-									initBolusDate.setUTCHours(
-										initBolusDate.getUTCHours() -
-											initBolusDate.getTimezoneOffset() /
-												60
-									)
-								);
-								// console.log("bolusGMTok: "+ basicBolusGmt);
-								// timeSameGmt is NaN
-								// let timeSameGmt = basicBolusGmt.getHours() < 10 ? "0" + basicBolusGmt.getHours() + ":" + basicBolusGmt.getMinutes() : basicBolusGmt.getHours() + ":" + basicBolusGmt.getMinutes();
-								let zeroHours =
-									basicBolusGmt.getHours() < 10 ? "0" : "";
-								let zeroMinutes =
-									basicBolusGmt.getMinutes() < 10 ? "0" : "";
-								let timeSameGmt =
-									zeroHours +
-									basicBolusGmt.getHours() +
-									":" +
-									zeroMinutes +
-									basicBolusGmt.getMinutes();
-								// console.log(time+ "<<<<<<<"+timeSameGmt);
-								//
-								// console.log(range.from + " plus petit que " + timeSameGmt + " plus petit que " + range.to);
 
-								if (
-									timeSameGmt >= range.from &&
-									timeSameGmt <= range.to
-								) {
-									// console.log("comparaison ok, check selecteddays");
+								/// Code inutilisé car on utilise maintenant les date et time en UTC0
+
+								// code pour mettre en heure locale (db-->ui)
+								// CODE Potentiellement inutile
+								// let basicBolusGmt = new Date(
+								// 	initBolusDate.setUTCHours(
+								// 		initBolusDate.getUTCHours() -
+								// 			initBolusDate.getTimezoneOffset() /
+								// 				60
+								// 	)
+								// );
+
+								// Code pour mettre un 0 devant l'heure ou la minute au cas ou c'est inférieur à 10
+								// Sert pour le formatage de l'heure
+								// let zeroHours =
+								// 	basicBolusGmt.getHours() < 10 ? "0" : "";
+								// let zeroMinutes =
+								// 	basicBolusGmt.getMinutes() < 10 ? "0" : "";
+								// let timeSameGmt =
+								// 	zeroHours +
+								// 	basicBolusGmt.getHours() +
+								// 	":" +
+								// 	zeroMinutes +
+								// 	basicBolusGmt.getMinutes();
+
+								// Si la données de bolus se situe dans la range
+								// Les deux données sont en UTC0 donc on peut les comparer
+								if (time >= range.from && time <= range.to) {
+									// daysNumbers = les jours qui ont été sélectionnés lors de la création de la range
 									let daysNumbers = range.daysNumbers;
+
+									// Si le jour du tag correspond à un des jours pris en charge par la range
 									if (
 										daysNumbers.includes(
 											new Date(cleanedDate).getDay()
 										)
 									) {
-										const datetime =
-											this.roundTo5Minutes(initBolusDate);
-										// console.log("datetime should be same as time in middle: "+datetime);
-										// console.log("this should be -1 ou -2: "+time);
+										// const datetime =
+										// 	this.roundTo5Minutes(initBolusDate);
 
+										// La datetime du bolus de repas en UTC 0
+										const datetime = initBolusDate;
+
+										// On init le pending tag qui sera envoyé pour être inséré dans la DB
 										let pendingTag = {};
 										pendingTag.pendingName = range.name;
 										pendingTag.pendingDatetime = datetime;
-										// pendingTags.push(pendingTag);
-										console.log("témoin: ");
-										console.log(pendingTag);
-										if (prevDate.includes(cleanedDate)) {
-											// prevDateAndTime.push(cleanedDate+" "+time);
-											// console.log("multiple meal detected (date only): " + prevDate +"==="+cleanedDate);
 
-											let minOfRange;
+										// Si un autre bolus de repas a déjà été append qui appartient à la même journée
+										// Vérifier si c'est bien le premier bolus de la range
+										if (prevDate.includes(cleanedDate)) {
+											// On parcourt tous les éléments dans prevDateTime à la recherche d'une datetime égale avec un time plus petit
 											for (
 												let i = 0;
 												i < prevDateAndTime.length;
 												i++
 											) {
+												// Si la date est la mm que cleanedDate
 												if (
 													prevDateAndTime[i].substr(
 														0,
 														10
 													) === cleanedDate
 												) {
-													// 2022/05/06
-													// console.log("ok: "+prevDateAndTime[i] +"==="+ cleanedDate);
-													// minOfRange = prevDateAndTime[i];
 													let minTime =
 														prevDateAndTime[
 															i
 														].substr(11, 5);
-													// console.log("SAVOIR TIME: "+time+"<<<<<< que minTime "+minTime);
 													if (time < minTime) {
 														// prevTime est déjà dans PendingTag mais où ? faut le retrouver et puis le remplacer par datetime
-														// console.log("@@@@@@@@@@@@@@@@@@@@");
 														pendingTags.forEach(
 															(tag, ind, arr) => {
-																// console.log(tag);
-																// console.log(ind);
-																// console.log("GO TO TRASH"+prevDateAndTime[i].substr(17, prevDateAndTime[i].length-17));
-																// console.log("IF I WILL"+tag.pendingDatetime);
 																if (
 																	tag.pendingDatetime ==
 																	prevDateAndTime[
@@ -181,28 +175,13 @@ class ImportFileCard extends Component {
 																		) ==
 																		"05"
 																	) {
-																		console.log(
-																			"GO TO TRASH: " +
-																				prevDateAndTime[
-																					i
-																				].substr(
-																					17,
-																					prevDateAndTime[
-																						i
-																					]
-																						.length -
-																						17
-																				)
-																		);
 																	}
-																	// console.log("yeeees lets replace it by the current datetime:");
-																	// console.log(datetime);
+
 																	tag.pendingDatetime =
 																		datetime;
 																	prevDate.push(
 																		cleanedDate
 																	);
-																	// console.log("current cleanedDate: "+cleanedDate);
 																	prevDateAndTime.push(
 																		cleanedDate +
 																			" " +
@@ -210,10 +189,7 @@ class ImportFileCard extends Component {
 																			" " +
 																			datetime
 																	);
-																	// console.log("AFTER: ");
-																	// console.log(tag.pendingDatetime);
 																}
-																// console.log("derniere instruction du foreach");
 															}
 														);
 													}
@@ -224,12 +200,8 @@ class ImportFileCard extends Component {
 											pendingTag.pendingDatetime =
 												datetime;
 											pendingTags.push(pendingTag);
-											console.log(
-												"PREMIER ? PAS SUR ! : "
-											);
-											console.log(pendingTag);
+
 											prevDate.push(cleanedDate);
-											// console.log("current cleanedDate: "+cleanedDate);
 											prevDateAndTime.push(
 												cleanedDate +
 													" " +
@@ -237,18 +209,30 @@ class ImportFileCard extends Component {
 													" " +
 													datetime
 											);
-											// console.log("current date + time : "+cleanedDate+" "+time+"\ncorresponding to: "+datetime);
-											// console.log("date length : "+cleanedDate.length);
 										}
 									}
 								}
 							}
 						}
-						console.log(pendingTags);
-						let insertIntoTag = await postPendingTag(pendingTags); // pendingtags contient bien 1/range mais faut que ce soit le premier
+						// We need to convert the dates in UTC 0 because they are in + 2 now but with the correct hours which is not valid to store in DB
+						// F.E. If we have 12:00:00, the tag is really stored at 12:00:00 in the DB but it is UTC0 or the 12:00:00 that we have for the pending tag is GMT +2 or +1
+						let UTC0PendingTags = [];
+						pendingTags.forEach((tag) => {
+							let tempTag = {};
+							tempTag["pendingName"] = tag.pendingName;
+
+							let currentDate = new Date(tag.pendingDatetime);
+
+							let tempDate = new Date(tag.pendingDatetime);
+							tempDate.setUTCHours(currentDate.getHours());
+
+							tempTag["pendingDatetime"] = tempDate;
+							UTC0PendingTags.push(tempTag);
+						});
+						let insertIntoTag = await postPendingTag(
+							UTC0PendingTags
+						); // pendingtags contient bien 1/range mais faut que ce soit le premier
 						if (ranges.length) {
-							console.log(insertIntoTag);
-							// console.log(res[0]);
 							this.setState({ upload: 2 });
 							if (insertIntoTag === "alreadyexists") {
 								this.setState({
@@ -257,9 +241,6 @@ class ImportFileCard extends Component {
 								});
 							}
 							if (insertIntoTag === "redirect") {
-								console.log(
-									"le champ est libre pour le redirection"
-								);
 								this.setState({ redirect: true });
 							}
 						} else {

@@ -22,6 +22,9 @@ const IndicatorBar = (props) => {
 		let pannelWidth = parseInt(getComputedStyle(indicator.current).width);
 		let pannelWidthPerc = (pannelWidth / totalLength) * 100;
 
+		// console.log(totalLength);
+		// console.log(window.getComputedStyle(container.current));
+
 		let m1 = parseFloat((totalLength / 100) * 60);
 		let m2 = parseFloat((totalLength / 100) * 20);
 
@@ -39,6 +42,9 @@ const IndicatorBar = (props) => {
 
 			indicator.current.style.left = finalPosPercentage;
 			indicator.current.style.color = "#1cc88a";
+			// console.log(window.getComputedStyle(indicator.current));
+			// console.log(indicator.current.style);
+			// console.log(finalPosPercentage);
 		} else if (actualPosition > max) {
 			// Position is in the right red part
 

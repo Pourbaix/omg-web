@@ -25,7 +25,7 @@ class PendingTags extends Component {
 	componentDidMount() {
 		getPendingTags().then((pendingTags) => {
 			this.setState({ pendingTags: pendingTags });
-			console.log(this.state.pendingTags);
+			// console.log(this.state.pendingTags);
 		});
 	}
 

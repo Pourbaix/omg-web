@@ -410,7 +410,12 @@ const Statistics = () => {
 									<CardBasicTitle
 										title={"Average glucose level per day"}
 									>
-										<div style={{ width: "300px" }}>
+										<div
+											style={{
+												width: "300px",
+												margin: "auto",
+											}}
+										>
 											<IndicatorBar
 												min={lowLimit}
 												max={highLimit}
