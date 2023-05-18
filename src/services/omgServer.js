@@ -81,8 +81,9 @@ export async function getRangesWithFormattedTimes() {
 	return res.json();
 }
 
-export async function getBolusWithFormattedDateAndTime() {
-	let url = hostUrl + "/insulin/dateandtime";
+export async function getBolusWithFormattedDateAndTime(firstDataDatetime) {
+	let url =
+		hostUrl + "/insulin/dateandtime" + "?firstData=" + firstDataDatetime;
 	let res = await fetch(url, {
 		credentials: "same-origin",
 		method: "GET",

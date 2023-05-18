@@ -55,13 +55,15 @@ class ImportFileCard extends Component {
 						this.setState({ upload: 3 });
 						let ranges = await getRangesWithFormattedTimes();
 						if (ranges.length) {
-							// console.log(ranges);
+							console.log(ranges);
 							this.setState({ upload: 4 });
 						}
 						let bolusEvents =
-							await getBolusWithFormattedDateAndTime();
+							await getBolusWithFormattedDateAndTime(
+								res[1].firstDataDatetime
+							);
+						// console.log(bolusEvents);
 						if (bolusEvents.length) {
-							// console.log(bolusEvents);
 							this.setState({ upload: 5 });
 						}
 						let pendingTags = [];
