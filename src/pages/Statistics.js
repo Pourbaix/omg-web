@@ -11,7 +11,6 @@ import { useCreateGroupByType } from "../hooks/useCreateGroupByType";
 import { useProcessSumsWithArray } from "../hooks/useProcessSumsWithArray";
 import { useRemoveTodayData } from "../hooks/useRemoveTodayData";
 import CardBasicTitle from "../components/Cards/CardBasicTitle";
-import { element } from "prop-types";
 
 const Statistics = () => {
 	const [pageState, setPageState] = useState(1);
@@ -33,6 +32,7 @@ const Statistics = () => {
 	]);
 
 	const [datetimeRangeError, setDatetimeRangeError] = useState("");
+	const [isMissingData, setIsMissingData] = useState(true);
 
 	const navigate = useNavigate();
 
@@ -60,9 +60,9 @@ const Statistics = () => {
 	const handleSaveConfig = () => {
 		const saveConfig = {};
 		saveConfig["rangeModeConfig"] = datetimeRangeMode;
-		if (datetimeRangeMode == 3) {
+		if (datetimeRangeMode == 4) {
 			saveConfig["specifiedNumberOfDays"] = otherNumberOfDays;
-		} else if (datetimeRangeMode == 4) {
+		} else if (datetimeRangeMode == 5) {
 			saveConfig["specifiedRangeConfig"] = {
 				start: datetimeRangeValues[0],
 				end: datetimeRangeValues[1],
@@ -108,13 +108,14 @@ const Statistics = () => {
 									);
 								}}
 							>
-								<option value="0">Last 24h</option>
-								<option value="1">Last 7 days</option>
-								<option value="2">Last 30 days</option>
-								<option value="3">Other number of days</option>
-								<option value="4">Select a period</option>
+								<option value="0">Yesterday</option>
+								<option value="1">Last 24h</option>
+								<option value="2">Last 7 days</option>
+								<option value="3">Last 30 days</option>
+								<option value="4">Other number of days</option>
+								<option value="5">Select a period</option>
 							</select>
-							{datetimeRangeMode == 3 ? (
+							{datetimeRangeMode == 4 ? (
 								<div className="d-flex flex-column input-group">
 									<label htmlFor="days_number form-label">
 										Enter a number of days:
@@ -146,7 +147,7 @@ const Statistics = () => {
 							) : (
 								""
 							)}
-							{datetimeRangeMode == 4 ? (
+							{datetimeRangeMode == 5 ? (
 								<>
 									<p className="m-0">
 										Select another period:
@@ -287,9 +288,13 @@ const Statistics = () => {
 					);
 
 					// Sort data by type and don't use data that is from today
-					let typeSortedData = useCreateGroupByType(
-						useRemoveTodayData(insulinData)
-					);
+					// If we are in the 'last 24h' config we dont remove today datas
+					let typeSortedData =
+						datetimeRangeMode != 1
+							? useCreateGroupByType(
+									useRemoveTodayData(insulinData)
+							  )
+							: useCreateGroupByType(insulinData);
 					console.log(typeSortedData);
 					function dateSort(a, b) {
 						return new Date(a.datetime) > new Date(b.datetime)
@@ -350,17 +355,23 @@ const Statistics = () => {
 								</p>
 								<p className="m-0 text-primary fw-bold">
 									{datetimeRangeMode == 0
-										? "Last 24h"
+										? "Yesterday"
 										: datetimeRangeMode == 1
-										? "Last 7 days"
+										? "Last 24h"
 										: datetimeRangeMode == 2
-										? "Last 30 days"
+										? "Last 7 days"
 										: datetimeRangeMode == 3
+										? "Last 30 days"
+										: datetimeRangeMode == 4
 										? "Last " + otherNumberOfDays + " days"
 										: "From " +
-										  datetimeRangeValues[0] +
+										  new Date(
+												datetimeRangeValues[0]
+										  ).toLocaleString() +
 										  " To " +
-										  datetimeRangeValues[1]}
+										  new Date(
+												datetimeRangeValues[1]
+										  ).toLocaleString()}
 								</p>
 								<p
 									className="m-0 ms-2"
@@ -376,7 +387,7 @@ const Statistics = () => {
 									Modify...
 								</p>
 							</div>
-							{checkWarningDataHoles() ? (
+							{isMissingData ? (
 								<div className="w-100 bg-warning d-flex flex-column align-items-center">
 									<span className="text-white weight-bold">
 										Found missing data in the selected
@@ -576,15 +587,17 @@ const Statistics = () => {
 
 	const checkWarningDataHoles = async () => {
 		let missingData = await checkMissingData();
-		console.log(missingData);
+		let isMissing = false;
 		missingData.forEach((element) => {
 			if (
 				new Date(element.start) > new Date(datetimeRangeValues[0]) &&
 				new Date(element.end) < new Date(datetimeRangeValues[1])
 			) {
-				return true;
+				console.log("MISSING", element);
+				isMissing = true;
 			}
 		});
+		setIsMissingData(isMissing);
 	};
 
 	const init = async () => {
@@ -592,6 +605,7 @@ const Statistics = () => {
 		let config = window.localStorage.getItem("statSettings");
 		if (config) {
 			console.log("config detected");
+
 			// Read config and apply it
 			setConfigState(true);
 			switchTab(0);
@@ -604,7 +618,7 @@ const Statistics = () => {
 			let final_date;
 			switch (parseInt(parsedResponse.rangeModeConfig)) {
 				case 0:
-					// Last 24H
+					// Yesterday
 					setDatetimeRangeMode(0);
 					currentTimeMs = new Date().getTime();
 					targetTimeMS = currentTimeMs - 86400000;
@@ -624,8 +638,25 @@ const Statistics = () => {
 					break;
 
 				case 1:
-					// Last 7 days
+					// Last 24h
 					setDatetimeRangeMode(1);
+					currentTimeMs = new Date().getTime();
+					targetTimeMS = currentTimeMs - 86400000;
+					final_date = new Date();
+					final_date.setTime(targetTimeMS);
+					fetchStatisticData(
+						final_date.toISOString(),
+						new Date().toISOString()
+					);
+					setDatetimeRangeValues([
+						final_date.toISOString(),
+						new Date().toISOString(),
+					]);
+					break;
+
+				case 2:
+					// Last 7 days
+					setDatetimeRangeMode(2);
 					currentTimeMs = new Date().getTime();
 					targetTimeMS = currentTimeMs - 7 * 86400000;
 					final_date = new Date();
@@ -643,9 +674,9 @@ const Statistics = () => {
 					]);
 					break;
 
-				case 2:
+				case 3:
 					// Last 30 days
-					setDatetimeRangeMode(2);
+					setDatetimeRangeMode(3);
 					currentTimeMs = new Date().getTime();
 					targetTimeMS = currentTimeMs - 30 * 86400000;
 					final_date = new Date();
@@ -663,9 +694,9 @@ const Statistics = () => {
 					]);
 					break;
 
-				case 3:
+				case 4:
 					// User specified a number of days
-					setDatetimeRangeMode(3);
+					setDatetimeRangeMode(4);
 					currentTimeMs = new Date().getTime();
 					targetTimeMS =
 						currentTimeMs -
@@ -685,9 +716,9 @@ const Statistics = () => {
 						new Date().toISOString(),
 					]);
 					break;
-				case 4:
+				case 5:
 					// User specified a datetime range
-					setDatetimeRangeMode(4);
+					setDatetimeRangeMode(5);
 					await fetchStatisticData(
 						parsedResponse.specifiedRangeConfig.start,
 						parsedResponse.specifiedRangeConfig.end

@@ -68,7 +68,7 @@ const IndicatorBar = (props) => {
 					).toFixed(2) + "%";
 			}
 			indicator.current.style.left = finalPosPercentage;
-			indicator.current.style.color = "#e74a3b";
+			indicator.current.style.color = "#f9dc04";
 		} else if (actualPosition < min) {
 			// Position is in the left red part
 			// console.log(typeof actualPosition);
