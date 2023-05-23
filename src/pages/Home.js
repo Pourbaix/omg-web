@@ -7,7 +7,6 @@ import DefaultChartConfigModal from "../components/Modals/DefaultChartConfigModa
  */
 const Home = () => {
 	const [modalState, setModalState] = useState(false);
-	const [reloadSeed, setReloadSeed] = useState(0);
 
 	const [configState, setConfigState] = useState({
 		Glucose: true,
@@ -18,10 +17,6 @@ const Home = () => {
 	const [period, setPeriod] = useState(24);
 	const [startDatetime, setStartDatetime] = useState("");
 	const [endDatetime, setEndDatetime] = useState("");
-
-	const reloadChart = () => {
-		setReloadSeed(Math.random());
-	};
 
 	const isOnMobile = () => {
 		let mobileNav = false;
@@ -68,7 +63,7 @@ const Home = () => {
 				setPeriod(config["period"]);
 			}
 		}
-	}, [reloadSeed]);
+	}, []);
 
 	return (
 		<div className="container-fluid">
@@ -76,7 +71,7 @@ const Home = () => {
 				className="d-flex flex-column align-items-center"
 				style={{ position: "relative" }}
 			>
-				<h1 className="h1 mb-2 text-gray-800 text-center">
+				<h1 className="h1 mb-1 text-gray-800 text-center">
 					Welcome to OMG Web application !
 				</h1>
 				{!isOnMobile() ? (
@@ -86,11 +81,7 @@ const Home = () => {
 							style={{ gap: "15px" }}
 						>
 							<div className="d-flex" style={{ width: "75%" }}>
-								{/* <DefaultHomeChart reloadProps={reloadSeed} /> */}
-								<DefaultHomeChart
-									reloadProps={reloadSeed}
-									setDates={setDates}
-								/>
+								<DefaultHomeChart setDates={setDates} />
 							</div>
 							<div className="d-flex flex-column border border-3 rounded p-4">
 								<h5 className="text-center">
@@ -140,9 +131,6 @@ const Home = () => {
 										? setModalState(false)
 										: setModalState(true);
 									// console.log(modalState);
-								}}
-								reloadChart={() => {
-									reloadChart();
 								}}
 							/>
 						) : (
