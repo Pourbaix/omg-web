@@ -32,7 +32,7 @@ const Statistics = () => {
 	]);
 
 	const [datetimeRangeError, setDatetimeRangeError] = useState("");
-	const [isMissingData, setIsMissingData] = useState(true);
+	const [isMissingData, setIsMissingData] = useState(false);
 
 	const navigate = useNavigate();
 
@@ -154,8 +154,6 @@ const Statistics = () => {
 									</p>
 									<DateTimeRangePicker
 										onChange={(result) => {
-											// console.log(result);
-											// console.log(new Date(result[0]));
 											setDatetimeRangeError("");
 											if (
 												new Date(result[0]) <
@@ -295,7 +293,6 @@ const Statistics = () => {
 									useRemoveTodayData(insulinData)
 							  )
 							: useCreateGroupByType(insulinData);
-					console.log(typeSortedData);
 					function dateSort(a, b) {
 						return new Date(a.datetime) > new Date(b.datetime)
 							? 1
@@ -324,11 +321,6 @@ const Statistics = () => {
 						useCreateGroupByDate(typeSortedData[2].sort(dateSort)),
 						"AUTO_BASAL_DELIVERY"
 					);
-					// console.log(
-					// 	correctionValuesSumList,
-					// 	mealValuesSumList,
-					// 	basalValuesSumList
-					// );
 
 					let finalResults = [
 						correctionValuesSumList.reduce(
@@ -344,8 +336,6 @@ const Statistics = () => {
 							0.0
 						) / basalValuesSumList.length,
 					];
-
-					console.log(finalResults);
 
 					return (
 						<div className="w-100 d-flex flex-column">
@@ -580,20 +570,18 @@ const Statistics = () => {
 
 	const fetchStatisticData = async (startDate, endDate) => {
 		let response = await getDataInRange(startDate, endDate);
-		// console.log(startDate, endDate);
-		console.log(response);
 		setGlobalData(response);
 	};
 
 	const checkWarningDataHoles = async () => {
 		let missingData = await checkMissingData();
 		let isMissing = false;
+		console.log("checking missing data");
 		missingData.forEach((element) => {
 			if (
 				new Date(element.start) > new Date(datetimeRangeValues[0]) &&
 				new Date(element.end) < new Date(datetimeRangeValues[1])
 			) {
-				console.log("MISSING", element);
 				isMissing = true;
 			}
 		});
@@ -644,7 +632,7 @@ const Statistics = () => {
 					targetTimeMS = currentTimeMs - 86400000;
 					final_date = new Date();
 					final_date.setTime(targetTimeMS);
-					fetchStatisticData(
+					await fetchStatisticData(
 						final_date.toISOString(),
 						new Date().toISOString()
 					);
@@ -664,7 +652,7 @@ const Statistics = () => {
 					final_date.setHours(0);
 					final_date.setMinutes(0);
 					final_date.setSeconds(0);
-					fetchStatisticData(
+					await fetchStatisticData(
 						final_date.toISOString(),
 						new Date().toISOString()
 					);
@@ -684,7 +672,7 @@ const Statistics = () => {
 					final_date.setHours(0);
 					final_date.setMinutes(0);
 					final_date.setSeconds(0);
-					fetchStatisticData(
+					await fetchStatisticData(
 						final_date.toISOString(),
 						new Date().toISOString()
 					);
@@ -706,7 +694,7 @@ const Statistics = () => {
 					final_date.setHours(0);
 					final_date.setMinutes(0);
 					final_date.setSeconds(0);
-					fetchStatisticData(
+					await fetchStatisticData(
 						final_date.toISOString(),
 						new Date().toISOString()
 					);
@@ -730,17 +718,20 @@ const Statistics = () => {
 			}
 			setHighLimit(parseFloat(parsedResponse.limits.high));
 			setLowLimit(parseFloat(parsedResponse.limits.low));
-			checkWarningDataHoles();
-			setTimeout(() => {
-				setLoadingState(false);
-			}, 1000);
+			setLoadingState(false);
 		} else {
-			console.log(config);
 			// If there is no configuration active, ask the user to configure
 			setConfigState(false);
 			disableTabs(1);
 		}
 	};
+
+	useEffect(() => {
+		const checkHoles = async () => {
+			await checkWarningDataHoles();
+		};
+		checkHoles();
+	}, [datetimeRangeValues]);
 
 	useEffect(() => {
 		init();
