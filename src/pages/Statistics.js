@@ -1,6 +1,6 @@
 import { useState, useRef, useEffect } from "react";
 import { useNavigate } from "react-router";
-import IndicatorBar from "../components/StatsComponents/IndicatorBar.js";
+import IndicatorBar from "../components/StatsComponents/LevelIndicatorBar.js";
 import DateTimeRangePicker from "@wojtekmaj/react-datetimerange-picker";
 import { getDataInRange, checkMissingData } from "../services/omgServer";
 import { useProcessAvg } from "../hooks/useProcessAvg";

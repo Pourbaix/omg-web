@@ -2,7 +2,7 @@
 import { cleanup, render, screen, prettyDOM } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import "@testing-library/jest-dom";
-import IndicatorBar from "../StatsComponents/IndicatorBar";
+import IndicatorBar from "../StatsComponents/LevelIndicatorBar";
 import "../../styles/scss/stats/indicatorBar.scss";
 
 describe("Testing the IndicatorBar component", () => {
