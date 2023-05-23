@@ -23,6 +23,7 @@ import {
 } from "../../../services/omgServer";
 import { useCreateDataStructureHomeChart } from "../../../hooks/useCreateDataStructure";
 import Meal from "../../../assets/meal.svg";
+import Restore from "../../../assets/rotate-right-solid.svg";
 
 const DefaultHomeChart = (props) => {
 	const [globalData, setGlobalData] = useState([]);
@@ -30,6 +31,8 @@ const DefaultHomeChart = (props) => {
 	const [startDate, setStartDate] = useState("");
 	const [endDate, setEndDate] = useState("");
 	const [barWidth, setBarWidth] = useState(4);
+
+	const [loadingState, setLoadingSate] = useState(false);
 
 	const [maxGlucoseValue, setMaxGlucoseValue] = useState(400);
 
@@ -53,6 +56,8 @@ const DefaultHomeChart = (props) => {
 
 	const [dataHoles, setDataHoles] = useState([]);
 	const [filteredDataHoles, setFilteredDataHoles] = useState([]);
+
+	const [dayOffset, setDayOffset] = useState(0);
 
 	const chartRef = useRef(null);
 
@@ -108,6 +113,7 @@ const DefaultHomeChart = (props) => {
 		}
 	};
 
+	// Process the bar width for basal insuli and correction insulin
 	const processBarWidth = (dataStartDate = null, dataEndDate = null) => {
 		if (dataStartDate && dataEndDate) {
 			let currentMsDisplayed =
@@ -121,12 +127,6 @@ const DefaultHomeChart = (props) => {
 			setBarWidth(18);
 		}
 	};
-
-	const down = (ctx, value) =>
-		ctx.p0.parsed.y > ctx.p1.parsed.y ? value : undefined;
-
-	const skipped = (ctx, value) =>
-		ctx.p0.skip || ctx.p1.skip ? value : undefined;
 
 	const holes = (ctx, value) => {
 		let final_value = undefined;
@@ -558,7 +558,7 @@ const DefaultHomeChart = (props) => {
 								index
 							].fontColor = "#bfbfbf";
 							chartRef.current.legend.update();
-							chartRef.current.update();
+							chartRef.current.update("none");
 						} else {
 							if (index == 2) {
 								let targetDataset =
@@ -575,7 +575,7 @@ const DefaultHomeChart = (props) => {
 										return x.data["pointHoverRadius"];
 									}
 								);
-								chartRef.current.update();
+								chartRef.current.update("none");
 							}
 							chartRef.current.show(index);
 						}
@@ -677,16 +677,18 @@ const DefaultHomeChart = (props) => {
 		setDataState(defaultConfig);
 		const getData = async () => {
 			title.current = "Chart for last " + period + "h data:";
-			let response = await getLastXhData(parseInt(period));
+			setLoadingSate(true);
+			let response = await getLastXhData(parseInt(period), dayOffset);
 			let holes = await checkMissingData();
 			let dataStructure = useCreateDataStructureHomeChart(response);
+			setLoadingSate(false);
 
 			setDataHoles(holes);
 			setMaxGlucoseValue(findMaxValue(dataStructure));
 			setGlobalData(dataStructure);
 		};
 		getData();
-	}, [props.reloadProps]);
+	}, [dayOffset]);
 
 	useEffect(() => {
 		const postProcess = async () => {
@@ -723,24 +725,81 @@ const DefaultHomeChart = (props) => {
 			}
 		};
 		postProcess();
-	}, [globalData, props.reloadProps]);
+		chartRef.current.update("none");
+	}, [globalData]);
 
 	return (
 		<div
-			className="w-100 overflow-visible"
-			// style={{ maxWidth: "80%" }}
+			style={{ display: "flex", flexDirection: "column", width: "100%" }}
 		>
-			<Chart
-				type="line"
-				ref={chartRef}
-				options={options}
-				data={data}
-				plugins={[
-					legendMargin,
-					// tagsLabels,
-					tagsLabelsMarkers,
-				]}
-			/>
+			<div
+				className="w-100 overflow-visible position-relative"
+				// style={{ maxWidth: "80%" }}
+			>
+				<Chart
+					type="line"
+					ref={chartRef}
+					options={options}
+					data={data}
+					plugins={[
+						legendMargin,
+						// tagsLabels,
+						tagsLabelsMarkers,
+					]}
+				/>
+				{loadingState ? (
+					<p className="w-100 h-100 position-absolute top-0 start-0 d-flex justify-content-center align-items-center fs-3">
+						Loading Data...
+					</p>
+				) : (
+					""
+				)}
+			</div>
+			<div
+				className="d-flex flex-row justify-content-center"
+				style={{ gap: "15px" }}
+			>
+				<button
+					onClick={() => {
+						setDayOffset(dayOffset + 24);
+					}}
+					className="btn btn-primary"
+				>
+					Older (-24h)
+				</button>
+				<button
+					onClick={() => {
+						if (dayOffset > 0) {
+							setDayOffset(0);
+						}
+					}}
+					className="btn btn-warning d-flex align-items-center"
+				>
+					<img
+						alt="restore logo"
+						src={Restore}
+						style={{ width: "18px", marginRight: "5px" }}
+					/>
+					Restore
+				</button>
+				{dayOffset > 0 ? (
+					<button
+						onClick={() => {
+							setDayOffset(dayOffset - 24);
+						}}
+						className="btn btn-primary"
+					>
+						Newer (+24h)
+					</button>
+				) : (
+					<button
+						onClick={() => {}}
+						className="btn btn-primary disabled"
+					>
+						Newer (+24h)
+					</button>
+				)}
+			</div>
 		</div>
 	);
 };

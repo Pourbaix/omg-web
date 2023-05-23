@@ -67,7 +67,6 @@ const DefaultChartConfigModal = (props) => {
 		});
 		window.localStorage.setItem("defaultChartSettings", newsettings);
 		setButtonState(1);
-		props.reloadChart();
 		window.location.reload();
 		return 1;
 	};

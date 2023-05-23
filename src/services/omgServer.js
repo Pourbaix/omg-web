@@ -166,7 +166,7 @@ export async function postUpload(file, sensorModel, importName) {
 	}
 }
 
-export async function getLastXhData(hoursNumber) {
+export async function getLastXhData(hoursNumber, dayOffset = 0) {
 	if (
 		typeof hoursNumber !== "number" ||
 		hoursNumber > 72 ||
@@ -174,7 +174,13 @@ export async function getLastXhData(hoursNumber) {
 	) {
 		return 0;
 	}
-	let url = hostUrl + "/data/lastXhData" + "?hours=" + hoursNumber;
+	let url =
+		hostUrl +
+		"/data/lastXhData" +
+		"?hours=" +
+		hoursNumber +
+		"&offset=" +
+		dayOffset;
 	let res = await fetch(url, {
 		credentials: "same-origin",
 		method: "GET",
