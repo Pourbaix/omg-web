@@ -52,14 +52,13 @@ class ActivateBasicTag extends Component {
 		getRecentTags().then((res) => {
 			if (res) {
 				this.setState({ recentTags: res });
-				console.log(this.getDatePickerFormat(new Date(Date.now())));
+				// console.log(this.getDatePickerFormat(new Date(Date.now())));
 			} else {
-				console.log(res);
+				// console.log(res);
 			}
 		});
 		getAllTagsFromUserId().then((res) => {
 			if (res) {
-				console.log(res);
 				this.setState({ allTags: res });
 				const autoCompleteJS = new autoComplete({
 					selector: "#manualBasicTagInput",
@@ -70,7 +69,7 @@ class ActivateBasicTag extends Component {
 						tag: "p",
 						class: "search_item text-primary",
 						element: (item, data) => {
-							console.log(item);
+							// console.log(item);
 							item.setAttribute(
 								"onclick",
 								'document.getElementById("manualBasicTagInput").value = ' +
@@ -98,7 +97,7 @@ class ActivateBasicTag extends Component {
 	}
 
 	clickSearchElement = (element) => {
-		console.log(element);
+		// console.log(element);
 	};
 
 	// componentDidUpdate(prevProps, prevState, snapshot) {
@@ -188,9 +187,7 @@ class ActivateBasicTag extends Component {
 			let chosenDatatimeISO = new Date(
 				this.state.roundedDatetime
 			).toISOString();
-			// console.log("yo yo yo: "+chosenDatatimeISO);  // 2022-05-07T10:35:00.000Z alors qu'il est 12:35
 			// let chosenDatatimeISO = useToIsoString(new Date(this.state.roundedDatetime));
-			console.log("yo yo yo: " + chosenDatatimeISO);
 			postBasicTag(this.state.chosenTag, chosenDatatimeISO).then(
 				(res) => {
 					if (res) {
