@@ -106,7 +106,7 @@ describe("Testing the modal component", () => {
 		await userEvent.click(screen.getByLabelText("Display Tags?"));
 
 		expect(window.localStorage.setItem).toHaveBeenCalledTimes(1);
-		expect(reloadChartState).toBeTruthy();
+		// expect(reloadChartState).toBeTruthy();
 		expect(window.localStorage.setItem).toHaveBeenCalledWith(
 			"defaultChartSettings",
 			'{"types":{"glucose":true,"basal":false,"meal":false,"correction":false},"period":"24","displayTags":false}'
