@@ -481,7 +481,7 @@ class ImportFileCard extends Component {
 			<div>
 				<div
 					id="uploadCard"
-					className="card d-flex border-bottom-primary shadow h-100 py-2 mb-3 me-3"
+					className="card d-flex border-bottom-primary shadow py-2 mb-3 me-3"
 				>
 					<div className="card-body">
 						<div className="flex-d no-gutters align-items-center">

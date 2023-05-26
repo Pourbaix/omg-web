@@ -452,7 +452,12 @@ export async function checkMissingData() {
 	return res.json();
 }
 
-export async function postAutoImportCredentials(username, password, country) {
+export async function postAutoImportCredentials(
+	username,
+	password,
+	country,
+	patientUsername
+) {
 	let url = hostUrl + "/data/autoImportAccount";
 	let res = await fetch(url, {
 		credentials: "same-origin",
@@ -468,6 +473,7 @@ export async function postAutoImportCredentials(username, password, country) {
 			username: username,
 			password: password,
 			country: country,
+			patientUsername: patientUsername,
 		}),
 	});
 	return await res.json();

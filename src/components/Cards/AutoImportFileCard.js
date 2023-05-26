@@ -14,6 +14,7 @@ const AutoImportFileCard = () => {
 	const username = useRef(null);
 	const password = useRef(null);
 	const country = useRef(null);
+	const patientUsername = useRef(null);
 	const [error, setError] = useState("");
 	const [buttonState, setButtonState] = useState(0);
 	const [deleteButtonState, setDeleteButtonState] = useState(0);
@@ -24,6 +25,7 @@ const AutoImportFileCard = () => {
 		credentials["username"] = username.current.value;
 		credentials["password"] = password.current.value;
 		credentials["country"] = country.current.value;
+		credentials["patientUsername"] = patientUsername.current.value;
 		setError("");
 		if (!credentials["username"]) {
 			setError("You have to give a username");
@@ -37,11 +39,16 @@ const AutoImportFileCard = () => {
 			setError("You have to give a country");
 			return 0;
 		}
+		if (!credentials["patientUsername"]) {
+			setError("You have to give the username of the patient");
+			return 0;
+		}
 		setButtonState(1);
 		let response = await postAutoImportCredentials(
 			credentials["username"],
 			credentials["password"],
-			credentials["country"]
+			credentials["country"],
+			credentials["patientUsername"]
 		);
 		console.log(response);
 		if (response.includes("User already has an account")) {
@@ -70,6 +77,7 @@ const AutoImportFileCard = () => {
 		username.current.disabled = true;
 		password.current.disabled = true;
 		country.current.disabled = true;
+		patientUsername.current.disabled = true;
 	};
 
 	const initialState = () => {
@@ -77,6 +85,7 @@ const AutoImportFileCard = () => {
 		username.current.disabled = false;
 		password.current.disabled = false;
 		country.current.disabled = false;
+		patientUsername.current.disabled = false;
 	};
 
 	const renderButton = () => {
@@ -191,13 +200,10 @@ const AutoImportFileCard = () => {
 
 	return (
 		<div
-			className="card d-flex border-bottom-primary shadow h-100 py-2 mb-2 me-2"
-			style={{ maxWidth: "350px", maxHeight: "max-content" }}
+			className="card d-flex border-bottom-primary shadow py-2 mb-2 me-2"
+			style={{ maxWidth: "350px", minHeight: "min-content" }}
 		>
-			<div
-				className="card-body"
-				style={{ padding: "1rem", maxHeight: "80px" }}
-			>
+			<div className="card-body" style={{ padding: "1rem" }}>
 				<div className="flex-d no-gutters align-items-center">
 					<div className="col me-2">
 						<div className="text fw-bold text-primary text-uppercase">
@@ -248,6 +254,23 @@ const AutoImportFileCard = () => {
 						/>
 						<div className="invalid-feedback">
 							You have to enter a country
+						</div>
+					</div>
+					<div className="row form-group" style={{ margin: "3px" }}>
+						<label
+							className="form-check-label"
+							htmlFor="patientUsername"
+						>
+							Patient username
+						</label>
+						<input
+							type="text"
+							className="form-control"
+							id="patientUsername"
+							ref={patientUsername}
+						/>
+						<div className="invalid-feedback">
+							You have to enter the username of the patient
 						</div>
 					</div>
 				</form>
