@@ -7,7 +7,8 @@
 		"start": "react-scripts start",
 		"build": "react-scripts build",
 		"test": "react-scripts test",
-		"eject": "react-scripts eject"
+		"eject": "react-scripts eject",
+		"coverage": "jest --coverage"
 	},
 	"browserslist": {
 		"production": [
@@ -63,6 +64,7 @@
 		"web-vitals": "^3.0.4"
 	},
 	"devDependencies": {
+		"@babel/preset-env": "^7.22.2",
 		"identity-obj-proxy": "^3.0.0"
 	}
 }

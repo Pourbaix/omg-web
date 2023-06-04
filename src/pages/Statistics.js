@@ -12,6 +12,23 @@ import { useProcessSumsWithArray } from "../hooks/useProcessSumsWithArray";
 import { useRemoveTodayData } from "../hooks/useRemoveTodayData";
 import CardBasicTitle from "../components/Cards/CardBasicTitle";
 
+/**
+ * ---------------
+ * Statistics.js
+ * ---------------
+ *
+ * This page contains all the statistics components and elements
+ *
+ * It is devided in two sections:
+ * 	- A settings section were you can configure the statistics
+ * 	- A page to display the statistics
+ *
+ * When the page is accessed, a process checking the configuration triggers.
+ * This process checks the localstorage for the configuration.
+ * If it is found, the page displays the statistics section.
+ * If it is not found , it redirect to the settings section and disable the statistics tab until the user has configured them.
+ */
+
 const Statistics = () => {
 	const [pageState, setPageState] = useState(1);
 	const [lastSelected, setLastSelected] = useState(1);
@@ -41,6 +58,7 @@ const Statistics = () => {
 		1: useRef(null),
 	};
 
+	// Used to disable a tab by his number
 	const disableTabs = (tabNumber) => {
 		for (let tab in Object.keys(navs)) {
 			if (tab != tabNumber) {
@@ -49,6 +67,7 @@ const Statistics = () => {
 		}
 	};
 
+	// Used to switch between tabs
 	const switchTab = (tabNumber) => {
 		console.log("switching tab to: " + tabNumber);
 
@@ -57,6 +76,7 @@ const Statistics = () => {
 		setLastSelected(tabNumber);
 	};
 
+	// Used to save the configuration in localstorage
 	const handleSaveConfig = () => {
 		const saveConfig = {};
 		saveConfig["rangeModeConfig"] = datetimeRangeMode;
@@ -76,6 +96,7 @@ const Statistics = () => {
 		window.location.reload();
 	};
 
+	// Reders the settings section
 	const renderSettings = () => {
 		return (
 			<div className="p-3 w-100">
@@ -223,25 +244,8 @@ const Statistics = () => {
 							</div>
 						</div>
 					</div>
+					{/* Samples for settings configuration parts */}
 					{/* <div className="p-3 border border-2">
-						<h5>Test title:</h5>
-						<div className="p-3 border border-2">
-							<h5>Test title:</h5>
-						</div>
-					</div>
-					<div className="p-3 border border-2">
-						<h5>Test title:</h5>
-						<div className="p-3 border border-2">
-							<h5>Test title:</h5>
-						</div>
-					</div>
-					<div className="p-3 border border-2">
-						<h5>Test title:</h5>
-						<div className="p-3 border border-2">
-							<h5>Test title:</h5>
-						</div>
-					</div>
-					<div className="p-3 border border-2">
 						<h5>Test title:</h5>
 						<div className="p-3 border border-2">
 							<h5>Test title:</h5>
@@ -262,8 +266,11 @@ const Statistics = () => {
 		);
 	};
 
+	// Used to render the statistics section
 	const renderStatistics = () => {
+		// If configuration is done
 		if (configState) {
+			// If fetching data is not finished
 			if (loadingState) {
 				return (
 					<div
@@ -273,11 +280,14 @@ const Statistics = () => {
 						<h2> Loading Statistics...</h2>
 					</div>
 				);
-			} else {
+			}
+			// If fetching data is finished
+			else {
 				console.log("CONFIG STATE");
 				let glucoseData = globalData["glucose"];
 				let insulinData = globalData["insulin"];
 				if (glucoseData && insulinData) {
+					// Lets process different math operations for ou stats
 					let avg = useProcessAvg(glucoseData, "glucose");
 					let timeInTargetData = useProcessTimeInTargetZone(
 						lowLimit,
@@ -322,6 +332,7 @@ const Statistics = () => {
 						"AUTO_BASAL_DELIVERY"
 					);
 
+					// Make the avg of every day
 					let finalResults = [
 						correctionValuesSumList.reduce(
 							(acc, curr) => acc + curr,
@@ -377,6 +388,7 @@ const Statistics = () => {
 									Modify...
 								</p>
 							</div>
+							{/* This is displayed if there are data holes detected in the selected period */}
 							{isMissingData ? (
 								<div className="w-100 bg-warning d-flex flex-column align-items-center">
 									<span className="text-white weight-bold">
@@ -555,6 +567,8 @@ const Statistics = () => {
 		}
 	};
 
+	// Used to render the page
+	// Renders either the statistics section or the settings
 	const renderPage = () => {
 		if (configState) {
 			switch (pageState) {
@@ -568,11 +582,13 @@ const Statistics = () => {
 		}
 	};
 
+	// Used to recover datas for stats
 	const fetchStatisticData = async (startDate, endDate) => {
 		let response = await getDataInRange(startDate, endDate);
 		setGlobalData(response);
 	};
 
+	// Used to check dataHoles in the selected range
 	const checkWarningDataHoles = async () => {
 		let missingData = await checkMissingData();
 		let isMissing = false;
@@ -588,8 +604,10 @@ const Statistics = () => {
 		setIsMissingData(isMissing);
 	};
 
+	// this function is executed everytime the component loads see the useEffect bellow
 	const init = async () => {
 		console.log("init");
+		// Read the localstorage configuration
 		let config = window.localStorage.getItem("statSettings");
 		if (config) {
 			console.log("config detected");
@@ -604,6 +622,7 @@ const Statistics = () => {
 			let currentTimeMs;
 			let targetTimeMS;
 			let final_date;
+			// See in wich datetime range case we are
 			switch (parseInt(parsedResponse.rangeModeConfig)) {
 				case 0:
 					// Yesterday
@@ -726,6 +745,7 @@ const Statistics = () => {
 		}
 	};
 
+	// When the datatimeRanges changed check dataholes not before
 	useEffect(() => {
 		const checkHoles = async () => {
 			await checkWarningDataHoles();
@@ -733,6 +753,7 @@ const Statistics = () => {
 		checkHoles();
 	}, [datetimeRangeValues]);
 
+	// Init the process when component loads
 	useEffect(() => {
 		init();
 	}, []);

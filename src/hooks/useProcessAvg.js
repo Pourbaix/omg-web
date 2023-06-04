@@ -1,4 +1,5 @@
 export const useProcessAvg = (list, dataToProcess = "") => {
+	// Process average from array. Possibility to give the data to process
 	if (list.length && typeof list == "object" && list instanceof Array) {
 		if (dataToProcess) {
 			const initial = 0;

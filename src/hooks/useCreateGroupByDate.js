@@ -1,4 +1,5 @@
 export const useCreateGroupByDate = (objList) => {
+	// Groups elements by date
 	let currentDate = "";
 	let groupList = [];
 	let group = [];

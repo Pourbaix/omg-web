@@ -10,6 +10,22 @@ import Error from "../../assets/error.svg";
 import Save from "../../assets/save.svg";
 import "../../styles/scss/components/cards/autoImport.scss";
 
+/**
+ * ----------------------
+ * AutoImportFileCard.js
+ * ----------------------
+ * This component is used to display the autoimport configuration card
+ * The user has to enter the account name and password, the patient user name and the country
+ * If one of these data is not present, an error message shows up
+ *
+ * There is also a dynamic button to show state of the config creation process
+ * When the credntial are sent to the backend it veryfies that they are valid before inserting them in the database.
+ * If they are not valid, the button changes to indicate that an error has occured/ that the credentials are not valid.
+ * For the other case, it just inform that the configuration is completed.
+ *
+ * Note that when a config is set, the user has the possibility to delete it with the "delete config" button
+ */
+
 const AutoImportFileCard = () => {
 	const username = useRef(null);
 	const password = useRef(null);
@@ -20,6 +36,7 @@ const AutoImportFileCard = () => {
 	const [deleteButtonState, setDeleteButtonState] = useState(0);
 	const [autoImportConfigured, setAutoImportConfigured] = useState(false);
 
+	// Called when clicking the configure button
 	const handleSubmit = async () => {
 		let credentials = {};
 		credentials["username"] = username.current.value;
@@ -72,6 +89,7 @@ const AutoImportFileCard = () => {
 		setButtonState(0);
 	};
 
+	// If auto import already configurated
 	const setFormToConfiguredState = () => {
 		setButtonState(2);
 		username.current.disabled = true;
@@ -80,6 +98,7 @@ const AutoImportFileCard = () => {
 		patientUsername.current.disabled = true;
 	};
 
+	// If auto import not configurated yet
 	const initialState = () => {
 		setButtonState(0);
 		username.current.disabled = false;
