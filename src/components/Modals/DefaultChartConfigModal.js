@@ -3,6 +3,18 @@ import { useState, useRef, useEffect } from "react";
 import Save from "../../assets/save.svg";
 import Checked from "../../assets/checked.svg";
 
+/**
+ * --------------------------
+ * DefaultChartConfigModal.js
+ * --------------------------
+ *
+ * This is the configuration modal for the HomeChart
+ * Here, the user has the possibility to:
+ * - Configure which data he wants to see on the chart
+ * - Configure the time preiod
+ * - Configure if he wants to display tags on the chart
+ */
+
 const DefaultChartConfigModal = (props) => {
 	const [type, setType] = useState({
 		glucose: false,
@@ -33,6 +45,7 @@ const DefaultChartConfigModal = (props) => {
 
 	const errorArea = useRef("");
 
+	// Called when changing the config
 	const handleChangeValue = (element) => {
 		let actualConfig = type;
 		actualConfig[element.name] = element.checked;
@@ -42,6 +55,7 @@ const DefaultChartConfigModal = (props) => {
 		}));
 	};
 
+	// Check that at least one of the checkbox is selected for types of data to display
 	const checkTypes = () => {
 		for (let element in type) {
 			if (type[element]) {
@@ -51,6 +65,8 @@ const DefaultChartConfigModal = (props) => {
 		return false;
 	};
 
+	// Called when svaing configuration
+	// Retrieves config and saves it in the localstorage
 	const handleSubmit = () => {
 		setError("");
 		let selectedPeriod = timePeriod;
@@ -71,6 +87,7 @@ const DefaultChartConfigModal = (props) => {
 		return 1;
 	};
 
+	// Load config if one is already existing
 	useEffect(() => {
 		const checkHoursConfig = (value) => {
 			let toStringValue = value.toString();
@@ -89,9 +106,11 @@ const DefaultChartConfigModal = (props) => {
 			}
 			return false;
 		};
+		// Try to load the config from localstorage
 		let loadedConfig = JSON.parse(
 			window.localStorage.getItem("defaultChartSettings")
 		);
+		// If one config already exists
 		if (loadedConfig) {
 			if (loadedConfig["types"] && loadedConfig["period"]) {
 				console.log();

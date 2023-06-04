@@ -25,6 +25,24 @@ import { useCreateDataStructureHomeChart } from "../../../hooks/useCreateDataStr
 import Meal from "../../../assets/meal.svg";
 import Restore from "../../../assets/rotate-right-solid.svg";
 
+/**
+ * -------------------
+ * DefaultHomeChart.js
+ * -------------------
+ *
+ * This component renders the HomeChart
+ *
+ * Warning the structure can be hard to understand if you have not work with Chart.js before
+ * Here is a good YouTube channel to learn concepts about Chart.js: https://www.youtube.com/c/ChartJS-tutorials/videos
+ *
+ * The chart is compose of 3 sub-chart:
+ * - One "linear chart" for glucose and meal bolus data
+ * - One "bar chart" for basal boluses
+ * - One "bar chart" for correction boluses
+ *
+ * There is also the possibility to display tags by using a plugin
+ */
+
 const DefaultHomeChart = (props) => {
 	const [globalData, setGlobalData] = useState([]);
 	const [tagsData, setTagsData] = useState([]);
@@ -113,7 +131,7 @@ const DefaultHomeChart = (props) => {
 		}
 	};
 
-	// Process the bar width for basal insuli and correction insulin
+	// Process the bar width for basal insuli and correction insulin (bar charts) from the size of the datetime range
 	const processBarWidth = (dataStartDate = null, dataEndDate = null) => {
 		if (dataStartDate && dataEndDate) {
 			let currentMsDisplayed =
@@ -128,6 +146,7 @@ const DefaultHomeChart = (props) => {
 		}
 	};
 
+	// Used to draw data holes on the glucose linear chart
 	const holes = (ctx, value) => {
 		let final_value = undefined;
 		filteredDataHoles.forEach((element) => {
@@ -140,6 +159,8 @@ const DefaultHomeChart = (props) => {
 		});
 		return final_value;
 	};
+
+	// Main data configuration for the home chart
 	let data = {
 		datasets: [
 			{
@@ -259,33 +280,6 @@ const DefaultHomeChart = (props) => {
 	};
 
 	// Plugin to display tags
-	const tagsLabels = {
-		id: "tagsLabels",
-		afterDatasetsDraw(chart, args, plugins) {
-			const {
-				ctx,
-				data,
-				chartArea: { top, bottom, left, right, width, height },
-				scales: { x, y },
-			} = chart;
-			ctx.save();
-
-			ctx.beginPath();
-			ctx.moveTo(200, 200);
-			ctx.lineTo(210, 208);
-			ctx.lineTo(245, 208);
-			ctx.lineTo(245, 192);
-			ctx.lineTo(210, 192);
-			ctx.lineTo(200, 200);
-			ctx.fillStyle = "rgba(255, 255, 255, 0.5)";
-			ctx.strokeStyle = "rgba(0, 0, 0, 0.8)";
-			// ctx.roundRect(200, top + height / 2, 100, 30, 5);
-			// ctx.rect(400, top + height / 2, 30, 20);
-			ctx.stroke();
-			ctx.fill();
-		},
-	};
-
 	const tagsLabelsMarkers = {
 		id: "tagsLabelsMarkers",
 		beforeDatasetsDraw(chart, args, plugins) {
@@ -351,10 +345,12 @@ const DefaultHomeChart = (props) => {
 		},
 	};
 
+	// Options config for the HomeChart
 	const options = {
 		layout: {
 			// padding: 25,
 		},
+		// Scales configuration => Very important
 		scales: {
 			x: {
 				type: "time",
@@ -643,6 +639,8 @@ const DefaultHomeChart = (props) => {
 		},
 	};
 
+	// Allows us to find the maximum glucose value and set the maximum scale value.
+	// This is used to let some space between the top of the glucose chart and the top of the drawable area for correction boluses
 	const findMaxValue = (data) => {
 		let maxValue = 0;
 		if (data.length) {
@@ -655,7 +653,9 @@ const DefaultHomeChart = (props) => {
 		return maxValue === 0 ? 400 : maxValue + 50;
 	};
 
+	// Process data recovery when loading component and traveling in time
 	useEffect(() => {
+		// Default configuration
 		let period = 48;
 		let defaultConfig = {
 			glucose: true,
@@ -663,6 +663,8 @@ const DefaultHomeChart = (props) => {
 			meal: true,
 			correction: true,
 		};
+
+		// Reading the config
 		let config = JSON.parse(
 			window.localStorage.getItem("defaultChartSettings")
 		);
@@ -690,6 +692,9 @@ const DefaultHomeChart = (props) => {
 		getData();
 	}, [dayOffset]);
 
+	// Called when new data is fetched
+	// Recovers the first and last data and send it to the control pannel to be displayed
+	// Also retreives the tags list and data holes
 	useEffect(() => {
 		const postProcess = async () => {
 			let dates = {
@@ -732,10 +737,7 @@ const DefaultHomeChart = (props) => {
 		<div
 			style={{ display: "flex", flexDirection: "column", width: "100%" }}
 		>
-			<div
-				className="w-100 overflow-visible position-relative"
-				// style={{ maxWidth: "80%" }}
-			>
+			<div className="w-100 overflow-visible position-relative">
 				<Chart
 					type="line"
 					ref={chartRef}

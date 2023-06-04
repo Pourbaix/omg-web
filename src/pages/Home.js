@@ -4,6 +4,8 @@ import DefaultChartConfigModal from "../components/Modals/DefaultChartConfigModa
 
 /**
  * Home page of the web application
+ *
+ * Here we can access to the home chart and his the control panel
  */
 const Home = () => {
 	const [modalState, setModalState] = useState(false);
@@ -18,6 +20,7 @@ const Home = () => {
 	const [startDatetime, setStartDatetime] = useState("");
 	const [endDatetime, setEndDatetime] = useState("");
 
+	// This function is important to not show the chart on mobile
 	const isOnMobile = () => {
 		let mobileNav = false;
 		if (
@@ -29,6 +32,7 @@ const Home = () => {
 		return "ontouchstart" in document.documentElement || mobileNav;
 	};
 
+	// Generate types states => Enabled or Disabled
 	const generateConfigInfo = () => {
 		let content = [];
 		for (let element of Object.keys(configState)) {
@@ -46,11 +50,13 @@ const Home = () => {
 		return content;
 	};
 
+	// Function used by the HomeCHart component to trigger rerender of the control panel
 	const setDates = (params) => {
 		setStartDatetime(new Date(params["first"]).toLocaleString());
 		setEndDatetime(new Date(params["last"]).toLocaleString());
 	};
 
+	// Triggered when loading component, it reads the configuration
 	useEffect(() => {
 		let config = JSON.parse(
 			window.localStorage.getItem("defaultChartSettings")

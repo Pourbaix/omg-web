@@ -1,4 +1,5 @@
 export const useRemoveTodayData = (array) => {
+	// Used to remove data related to the current day
 	if (typeof array !== "object" || !(array instanceof Array)) {
 		return 0;
 	}

@@ -1,4 +1,5 @@
 export const useCreateGroupByType = (objList) => {
+	// Groups elements by type => MEAL, CORRECTION or BASAL
 	if (typeof objList !== "object" || !(objList instanceof Array)) {
 		return 0;
 	}

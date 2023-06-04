@@ -5,6 +5,30 @@ import "../styles/scss/pages/loadingPage.scss";
 import LoadingConfig from "../assets/loading2.svg";
 import WarningLogo from "../assets/warning.svg";
 
+/**
+ * ---------------
+ * LoadingPage.js
+ * ---------------
+ *
+ * This page shows a loading for the user while the auto import is processing
+ *
+ * Here is how it works:
+ * 1. Has the user configured the auto import ?
+ * A. Yes
+ * B. NO
+ *
+ * 1.B If the user has not configured the autoimport just enter the site
+ *
+ * 1.A If the user has configured the autoimport, run autoimport process
+ * |
+ * |
+ * --> 2. Is the auto import successfull ?
+ * 	   A. Yes, everything is OK => Display successfull import message and redirect to site
+ *     B. No, something went wrong => Display error message and redirect to site
+ *
+ * This page works with the responses it receives from the backend side.
+ */
+
 const LoadingPage = () => {
 	const [message, setMessage] = useState("Loading the app...");
 	const container = useRef(null);
@@ -13,11 +37,13 @@ const LoadingPage = () => {
 		"This should not take much time"
 	);
 
+	// Method to check if the user has configured auto import
 	const checkAutoImportConfiguration = async () => {
 		const response = await checkAutoImportConfig();
 		return response;
 	};
 
+	// Method to trigger auto import process
 	const importLastDataFromAPI = async () => {
 		let response = await autoImportData();
 		if (response == "Data imported") {
@@ -36,6 +62,7 @@ const LoadingPage = () => {
 		}
 	};
 
+	// This executes when loading the component
 	useEffect(() => {
 		setMessage("Checking auto-import configuration...");
 		setTimeout(async () => {
