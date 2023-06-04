@@ -2,6 +2,7 @@ import React, { Component } from "react";
 import { signup } from "../services/omgServer";
 import { Cookies, withCookies } from "react-cookie";
 import { instanceOf } from "prop-types";
+import "../styles/scss/signUp/signUp.scss";
 
 class SignUp extends Component {
 	static propTypes = {
@@ -20,6 +21,7 @@ class SignUp extends Component {
 			messageApi: "",
 			showSmallButtons: true,
 			secret: "",
+			agreeWithConditions: false,
 		};
 	}
 
@@ -28,7 +30,7 @@ class SignUp extends Component {
 	}
 
 	handleSignUp = async () => {
-		this.setState({ error: "" });
+		await this.setState({ error: "" });
 		this.removeDangerInput([
 			"inputFirstName",
 			"inputLastName",
@@ -65,6 +67,11 @@ class SignUp extends Component {
 			this.dangerInput(["inputLastName"]);
 			await this.setState({
 				error: "You can't use special characters for names",
+			});
+		}
+		if (!this.state.agreeWithConditions) {
+			await this.setState({
+				error: "You have to accept terms and conditions in order to create an account",
 			});
 		}
 		if (!this.state.error) {
@@ -200,6 +207,8 @@ class SignUp extends Component {
 	setSecret = (event) => this.setState({ secret: event.target.value });
 	setConfirmPassword = (event) =>
 		this.setState({ confirmPassword: event.target.value });
+	setAgreeWithConditions = (event) =>
+		this.setState({ agreeWithConditions: event.target.selected });
 	toSignIn = async () => await this.setCookie("method", "in");
 
 	render() {
@@ -214,7 +223,7 @@ class SignUp extends Component {
 					</div>
 					{/* <!-- Outer Row --> */}
 					<div className="d-flex justify-content-center">
-						<div className="card o-hidden border-0 shadow-lg mt-5 ms-2 me-2 mb-2">
+						<div className="card o-hidden border-0 shadow-lg mt-3 ms-2 me-2 mb-2">
 							<div className="card-body">
 								{/* <!-- Nested Row within Card Body --> */}
 								<div className="p-3">
@@ -284,6 +293,36 @@ class SignUp extends Component {
 													onChange={this.setSecret}
 												/>
 											</div>
+											<div
+												id="formGroupConsent"
+												className="form-group d-flex align-items-center"
+											>
+												<div className="form-check d-flex align-items-center">
+													<input
+														className="form-check-input"
+														type="checkbox"
+														value=""
+														id="flexCheckDefault"
+														onChange={
+															this
+																.setAgreeWithConditions
+														}
+													/>
+												</div>
+												<p
+													className="form-check-label m-0"
+													htmlor="flexCheckDefault"
+												>
+													I agree with the{" "}
+													<span
+														className="text-primary fw-bold term_and_cond"
+														data-bs-toggle="modal"
+														data-bs-target="#termAndCond"
+													>
+														terms and conditions
+													</span>
+												</p>
+											</div>
 											<button
 												id="btnSignUp"
 												className="btn btn-primary btn-user btn-block"
@@ -298,6 +337,67 @@ class SignUp extends Component {
 									<hr id="horizLine" className="mt-4" />
 									{this.showSmallButtons()}
 								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+				<div
+					className="modal fade"
+					id="termAndCond"
+					tabIndex={-1}
+					aria-labelledby="terms and conditions"
+					aria-hidden="false"
+				>
+					<div className="modal-dialog">
+						<div className="modal-content">
+							<div className="modal-header">
+								<h4 className="modal-title bg-white text-primary">
+									Terms and conditions
+								</h4>
+								<button
+									type="button"
+									class="btn-close"
+									data-bs-dismiss="modal"
+									aria-label="Close"
+								></button>
+							</div>
+							<div className="modal-body">
+								<h5>
+									👋Welcome to{" "}
+									<span className="text-primary fw-bold">
+										Oh My Glucose
+									</span>{" "}
+									!
+								</h5>
+								<p className="mb-2">
+									This application mainly focuses on
+									retrieving, storing and analysing medical
+									data. From imports, we only store what is
+									essential in order for the application to
+									work:
+								</p>
+								<ul className="stored_elements">
+									<li>All retrieved glucose data</li>
+									<li>
+										All retrieved insulin data including
+										meal, correction and basal
+									</li>
+									<li>
+										Medtronic credentials in case you
+										configure the automatic import system
+									</li>
+								</ul>
+								<p>
+									We will never be sharing those informations
+									with any third-parties what so ever.
+								</p>
+								<p className="text-warning">
+									⚠️ Keep in mind that you can,{" "}
+									<span className="fw-bold text-decoration-underline">
+										at any time
+									</span>
+									, delete all the data from the application.
+								</p>
 							</div>
 						</div>
 					</div>
