@@ -59,7 +59,7 @@ const SignIn = (props) => {
 			document.getElementById("horizLine").classList.add("mt-0");
 			message = (
 				<div className="text-danger d-flex justify-content-center mt-3 mb-0">
-					<p>{error}</p>
+					<p className="text-center">{error}</p>
 				</div>
 			);
 		}
